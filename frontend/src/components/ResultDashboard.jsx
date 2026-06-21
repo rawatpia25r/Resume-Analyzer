@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Printer, CheckCircle, XCircle, TrendingUp, AlertCircle, Award } from 'lucide-react';
 import ScoreCircle from './ScoreCircle';
 import SectionCard from './SectionCard';
+import ResumeBuilder from './ResumeBuilder';
 
-export default function ResultDashboard({ result, onReset }) {
+export default function ResultDashboard({ result, onReset, resumeText }) {
   const handlePrint = () => {
     window.print();
   };
@@ -39,7 +40,7 @@ export default function ResultDashboard({ result, onReset }) {
       <div id="report-content" className="flex flex-col gap-8">
         {/* Header & Score */}
         <div className="glass-card p-8 rounded-2xl flex flex-col md:flex-row items-center gap-8 shadow-xl">
-          <ScoreCircle score={result.ats_score} />
+          <ScoreCircle score={result.atsScore} />
           
           <div className="flex-1 space-y-4 text-center md:text-left">
             <h2 className="text-2xl font-bold">Resume Analysis Summary</h2>
@@ -47,15 +48,15 @@ export default function ResultDashboard({ result, onReset }) {
             
             <div className="flex flex-wrap gap-3 justify-center md:justify-start">
               <span className="px-3 py-1 bg-primary/20 text-primary border border-primary/30 rounded-full text-sm font-medium flex items-center gap-1">
-                <Award size={16} /> Level: {result.experience_level}
+                <Award size={16} /> Level: {result.experienceLevel}
               </span>
-              {result.job_match_percentage !== null && (
+              {result.jobMatchPercentage !== null && (
                 <span className={`px-3 py-1 border rounded-full text-sm font-medium flex items-center gap-1 ${
-                  result.job_match_percentage >= 70 ? 'bg-success/20 text-success border-success/30' : 
-                  result.job_match_percentage >= 40 ? 'bg-warning/20 text-warning border-warning/30' : 
+                  result.jobMatchPercentage >= 70 ? 'bg-success/20 text-success border-success/30' : 
+                  result.jobMatchPercentage >= 40 ? 'bg-warning/20 text-warning border-warning/30' : 
                   'bg-danger/20 text-danger border-danger/30'
                 }`}>
-                  <TrendingUp size={16} /> Job Match: {result.job_match_percentage}%
+                  <TrendingUp size={16} /> Job Match: {result.jobMatchPercentage}%
                 </span>
               )}
             </div>
@@ -76,8 +77,8 @@ export default function ResultDashboard({ result, onReset }) {
               <CheckCircle size={24} /> Matched Keywords
             </h3>
             <div className="flex flex-wrap gap-2">
-              {result.matched_keywords?.length > 0 ? (
-                result.matched_keywords.map((kw, i) => (
+              {result.matchedKeywords?.length > 0 ? (
+                result.matchedKeywords.map((kw, i) => (
                   <span key={i} className="px-3 py-1 bg-success/10 text-success rounded-lg text-sm border border-success/20">
                     {kw}
                   </span>
@@ -93,8 +94,8 @@ export default function ResultDashboard({ result, onReset }) {
               <XCircle size={24} /> Missing Keywords
             </h3>
             <div className="flex flex-wrap gap-2">
-              {result.missing_keywords?.length > 0 ? (
-                result.missing_keywords.map((kw, i) => (
+              {result.missingKeywords?.length > 0 ? (
+                result.missingKeywords.map((kw, i) => (
                   <span key={i} className="px-3 py-1 bg-danger/10 text-danger rounded-lg text-sm border border-danger/20">
                     {kw}
                   </span>
@@ -127,7 +128,7 @@ export default function ResultDashboard({ result, onReset }) {
               <AlertCircle size={24} /> Areas to Improve
             </h3>
             <ul className="space-y-3">
-              {result.improvements?.map((imp, i) => (
+              {result.improvementSuggestions?.map((imp, i) => (
                 <li key={i} className="flex gap-3">
                   <span className="text-warning mt-1">•</span>
                   <span className="text-text/90">{imp}</span>
@@ -138,11 +139,11 @@ export default function ResultDashboard({ result, onReset }) {
         </div>
 
         {/* Recommended Roles */}
-        {(result.recommended_roles?.length > 0) && (
+        {(result.recommendedRoles?.length > 0) && (
           <div className="glass-card p-6 rounded-2xl text-center">
             <h3 className="text-xl font-semibold mb-4 text-white">Recommended Roles for You</h3>
             <div className="flex flex-wrap gap-3 justify-center">
-              {result.recommended_roles.map((role, i) => (
+              {result.recommendedRoles.map((role, i) => (
                 <span key={i} className="px-4 py-2 bg-secondary/20 text-secondary border border-secondary/30 rounded-xl font-medium">
                   {role}
                 </span>
@@ -150,6 +151,11 @@ export default function ResultDashboard({ result, onReset }) {
             </div>
           </div>
         )}
+
+        {/* AI Resume Builder */}
+        <div className="border-t border-white/10 pt-8 print:hidden">
+          <ResumeBuilder analysisResult={result} resumeText={resumeText} />
+        </div>
       </div>
 
       {/* Print Styles */}

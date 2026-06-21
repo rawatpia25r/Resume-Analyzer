@@ -49,6 +49,11 @@ export const getUserResumes = async () => {
   return data;
 };
 
+export const deleteResume = async (id) => {
+  const { data } = await api.delete(`/resume/${id}`);
+  return data;
+};
+
 export const optimizeResume = async (resumeText, jobDescription) => {
   const { data } = await api.post('/ai/optimize', { resumeText, jobDescription });
   return data;
@@ -68,6 +73,17 @@ export const downloadPDF = async (content, title) => {
   document.body.appendChild(link);
   link.click();
   link.remove();
+};
+
+// AI Resume Builder endpoints
+export const generateTailoredResume = async (resumeText, jobDescription, companyName, roleName) => {
+  const { data } = await api.post('/generate/resume', { resumeText, jobDescription, companyName, roleName });
+  return data; // returns the structured resume JSON
+};
+
+export const generateCoverLetter = async (resumeText, jobDescription, companyName, roleName) => {
+  const { data } = await api.post('/generate/cover-letter', { resumeText, jobDescription, companyName, roleName });
+  return data; // returns { coverLetter: "..." }
 };
 
 export default api;
