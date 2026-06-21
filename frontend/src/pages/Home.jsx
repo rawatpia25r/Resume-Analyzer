@@ -1,44 +1,30 @@
 import React, { useState, useContext } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { analyzeResume } from '../services/api';
+import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Save, X } from 'lucide-react';
+
 import Hero from '../components/Hero';
 import UploadSection from '../components/UploadSection';
 import JobDescriptionInput from '../components/JobDescriptionInput';
 import AnalyzeButton from '../components/AnalyzeButton';
 import ResultDashboard from '../components/ResultDashboard';
-import { analyzeResume } from '../services/api';
-import { AuthContext } from '../context/AuthContext';
+import StatsSection from '../components/StatsSection';
+import FeaturesSection from '../components/FeaturesSection';
+import HowItWorks from '../components/HowItWorks';
+import Footer from '../components/Footer';
 
-function Home() {
+const Home = () => {
   const { user } = useContext(AuthContext);
   const [file, setFile] = useState(null);
   const [jobDescription, setJobDescription] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
-  const [resumeText, setResumeText] = useState('');
   const [showSaveBanner, setShowSaveBanner] = useState(false);
-
-  const handleFileChange = async (newFile) => {
-    setFile(newFile);
-    if (newFile) {
-      try {
-        // Read file as text for the ResumeBuilder component
-        // Note: .text() works well for DOCX but gives garbled output for PDF — this is a known limitation
-        const text = await newFile.text();
-        setResumeText(text.substring(0, 8000));
-      } catch {
-        setResumeText('');
-      }
-    } else {
-      setResumeText('');
-    }
-  };
 
   const handleAnalyze = async () => {
     if (!file) {
-      toast.error('Please upload a resume first');
+      toast.error('Please upload a resume first.');
       return;
     }
 
@@ -49,7 +35,6 @@ function Home() {
         setResult(response.data);
         toast.success('Analysis complete!');
 
-        // Show appropriate feedback based on auth state
         if (user) {
           toast.success('✅ Analysis saved to your dashboard.', {
             duration: 4000,
@@ -59,81 +44,108 @@ function Home() {
           setShowSaveBanner(true);
         }
       } else {
-        toast.error('Analysis failed. Try again.');
+        toast.error(response.error || 'Analysis failed. Please try again.');
       }
     } catch (error) {
-      console.error(error);
-      toast.error(error?.response?.data?.error || 'Something went wrong during analysis.');
+      console.error('Analysis error:', error);
+      
+      const errorMessage = 
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        (error?.code === 'ERR_NETWORK' 
+          ? 'Cannot connect to server. Please ensure the backend is running.'
+          : 'Something went wrong during analysis. Please try again.');
+
+      toast.error(errorMessage, { duration: 5000 });
     } finally {
       setIsAnalyzing(false);
     }
   };
 
-  const resetAnalysis = () => {
+  const handleReset = () => {
+    setResult(null);
     setFile(null);
     setJobDescription('');
-    setResult(null);
-    setResumeText('');
     setShowSaveBanner(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div className="pb-20">
-      <main className="max-w-5xl mx-auto px-4 pt-24">
-        {!result ? (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-col gap-8"
-          >
-            <Hero />
-            
-            <div className="glass-card p-6 md:p-8 rounded-2xl shadow-xl flex flex-col gap-8">
-              <UploadSection file={file} setFile={handleFileChange} />
+    <div className="min-h-screen pt-24 px-4 sm:px-6 flex flex-col relative overflow-hidden">
+      {/* Background Gradients */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-20 pointer-events-none">
+        <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-purple-600/10 blur-[120px] rounded-full" />
+        <div className="absolute top-[40%] -right-[10%] w-[40%] h-[40%] bg-cyan-600/10 blur-[120px] rounded-full" />
+      </div>
+
+      <div className="flex-grow max-w-7xl mx-auto w-full">
+        <AnimatePresence mode="wait">
+          {!result ? (
+            <motion.div
+              key="input-section"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-10 pb-20"
+            >
+              <Hero />
               
-              <div className="h-px w-full border-t border-white/10" />
-              
-              <JobDescriptionInput jobDescription={jobDescription} setJobDescription={setJobDescription} />
-              
-              <AnalyzeButton isAnalyzing={isAnalyzing} onClick={handleAnalyze} disabled={!file} />
-            </div>
-          </motion.div>
-        ) : (
-          <>
-            {/* Save Banner for guests */}
-            {showSaveBanner && !user && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-6 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 rounded-xl p-4 flex items-center justify-between gap-4"
-              >
-                <div className="flex items-center gap-3">
-                  <Save size={20} className="text-indigo-400 shrink-0" />
-                  <p className="text-sm text-white/90">
-                    💾 Create a free account to save this analysis and access it later from your dashboard.
-                  </p>
+              <div className="max-w-3xl mx-auto space-y-6">
+                <div className="glass-premium p-6 md:p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+                  <UploadSection file={file} setFile={setFile} />
+                  <div className="mt-8 pt-8 border-t border-white/5">
+                    <JobDescriptionInput 
+                      jobDescription={jobDescription} 
+                      setJobDescription={setJobDescription} 
+                    />
+                  </div>
+                  <AnalyzeButton 
+                    isAnalyzing={isAnalyzing} 
+                    onClick={handleAnalyze} 
+                    disabled={!file} 
+                  />
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <Link
-                    to="/register"
-                    className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition"
-                  >
-                    Sign Up Free
-                  </Link>
-                  <button onClick={() => setShowSaveBanner(false)} className="text-white/40 hover:text-white/70 transition">
-                    <X size={18} />
-                  </button>
+              </div>
+
+              {/* Landing Page Content below the fold */}
+              <div className="max-w-6xl mx-auto space-y-32 mt-32">
+                <StatsSection />
+                <HowItWorks />
+                <FeaturesSection />
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="result-section"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.5, type: 'spring', bounce: 0.3 }}
+            >
+              {showSaveBanner && (
+                <div className="max-w-6xl mx-auto mb-6 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm font-medium shadow-lg backdrop-blur-sm">
+                  <span className="text-white flex items-center gap-2">
+                    <span className="text-xl">💡</span> Want to save this analysis and access the AI Resume Builder?
+                  </span>
+                  <div className="flex gap-3">
+                    <button onClick={() => window.location.href = '/login'} className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors">Sign In</button>
+                    <button onClick={() => window.location.href = '/register'} className="px-4 py-2 bg-indigo-500 hover:bg-indigo-400 rounded-lg text-white transition-colors shadow-lg shadow-indigo-500/20">Create Free Account</button>
+                  </div>
                 </div>
-              </motion.div>
-            )}
-            <ResultDashboard result={result} onReset={resetAnalysis} resumeText={resumeText} />
-          </>
-        )}
-      </main>
+              )}
+              
+              <ResultDashboard 
+                result={result} 
+                onReset={handleReset} 
+                resumeText={file?.name || ''} 
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
-}
+};
 
 export default Home;

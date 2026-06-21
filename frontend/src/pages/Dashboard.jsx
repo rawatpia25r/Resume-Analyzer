@@ -1,108 +1,171 @@
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { FileText, FileSearch, ExternalLink, Trash2, Plus } from 'lucide-react';
-import { getUserResumes, deleteResume } from '../services/api';
-import { toast } from 'react-hot-toast';
+import React, { useState, useEffect, useContext } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FileText, Calendar, Trash2, ChevronRight, BarChart3, TrendingUp, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const getScoreColor = (score) => {
-  if (score >= 80) return { bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/30', bar: 'bg-emerald-500' };
-  if (score >= 50) return { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/30', bar: 'bg-amber-500' };
-  return { bg: 'bg-red-500/20', text: 'text-red-300', border: 'border-red-500/30', bar: 'bg-red-500' };
-};
+import api from '../services/api';
+import { AuthContext } from '../context/AuthContext';
+import { toast } from 'react-hot-toast';
 
 const Dashboard = () => {
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    const fetchResumes = async () => {
-      try {
-        const data = await getUserResumes();
-        setResumes(data);
-      } catch (error) {
-        toast.error('Failed to load past analyses');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchResumes();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Delete this analysis?')) return;
+  const fetchResumes = async () => {
     try {
-      await deleteResume(id);
-      setResumes((prev) => prev.filter((r) => r._id !== id));
-      toast.success('Analysis deleted');
-    } catch {
-      toast.error('Failed to delete');
+      const { data } = await api.get('/resume/user');
+      setResumes(data);
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to load history');
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleDelete = async (id, e) => {
+    e.preventDefault();
+    if (!window.confirm('Are you sure you want to delete this analysis?')) return;
+    
+    try {
+      await api.delete(`/resume/${id}`);
+      setResumes(resumes.filter((r) => r._id !== id));
+      toast.success('Analysis deleted');
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to delete analysis');
+    }
+  };
+
+  const getScoreColor = (score) => {
+    if (score >= 80) return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+    if (score >= 50) return 'text-amber-400 bg-amber-500/10 border-amber-500/20';
+    return 'text-red-400 bg-red-500/10 border-red-500/20';
+  };
+
   if (loading) {
-    return <div className="min-h-screen pt-24 px-4 flex items-center justify-center text-white">Loading dashboard...</div>;
+    return (
+      <div className="min-h-screen pt-24 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4 text-white/50">
+          <Loader2 className="animate-spin text-purple-500" size={40} />
+          <p className="font-medium tracking-wide">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen pt-32 px-4 max-w-6xl mx-auto pb-20">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-white">Your Resume Analyses</h1>
-        <Link to="/" className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white px-5 py-2.5 rounded-xl font-medium text-sm transition shadow-lg shadow-purple-500/20">
-          <Plus size={18} /> Analyze New Resume
+    <div className="min-h-screen pt-28 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">Your Dashboard</h1>
+          <p className="text-white/50 text-lg">Welcome back, <span className="text-white/80 font-medium">{user?.name}</span>. Here's your analysis history.</p>
+        </div>
+        <Link 
+          to="/" 
+          className="btn-primary px-6 py-3 shadow-[0_0_20px_rgba(124,58,237,0.3)] shimmer"
+        >
+          New Analysis
         </Link>
       </div>
 
       {resumes.length === 0 ? (
-        <div className="glass-card p-12 text-center rounded-2xl">
-          <FileSearch className="w-16 h-16 text-white/20 mx-auto mb-4" strokeWidth={1.5} />
-          <h2 className="text-xl text-white/80 font-medium">No resumes analyzed yet</h2>
-          <p className="text-white/50 mt-2 mb-6">Upload and analyze a resume to see results here.</p>
-          <Link to="/" className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-6 py-2.5 rounded-xl font-medium text-sm transition">
-            <Plus size={16} /> Get Started
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass-premium rounded-3xl p-16 text-center border-dashed border-2 border-white/10"
+        >
+          <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-6">
+            <FileText size={32} className="text-white/30" />
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-3">No analysis history yet</h3>
+          <p className="text-white/50 max-w-md mx-auto mb-8 leading-relaxed">
+            Upload your first resume to get actionable feedback, ATS scoring, and tailored document generation.
+          </p>
+          <Link to="/" className="btn-primary px-8 py-3.5 inline-flex">
+            Start First Analysis
           </Link>
-        </div>
+        </motion.div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {resumes.map((resume, idx) => {
-            const colors = getScoreColor(resume.atsScore);
-            const isInMemory = resume.originalResumeUrl === 'analyzed-in-memory' || resume.originalResumeUrl === 'stored-in-memory';
-            return (
-              <motion.div key={resume._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }}
-                className="glass-card p-6 rounded-2xl flex flex-col gap-4 relative overflow-hidden group hover:border-purple-500/50 transition-colors">
-                <div className="flex justify-between items-start">
-                  <div className="text-sm text-white/50">{new Date(resume.createdAt).toLocaleDateString()}</div>
-                  <div className={`${colors.bg} ${colors.text} ${colors.border} border px-3 py-1 rounded-full text-xs font-semibold`}>
-                    ATS: {resume.atsScore}/100
+          <AnimatePresence>
+            {resumes.map((resume, index) => (
+              <motion.div
+                key={resume._id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <Link 
+                  to={`/resume/${resume._id}`}
+                  className="block h-full glass-premium rounded-2xl p-6 group hover:-translate-y-1 hover:border-purple-500/30 transition-all duration-300 relative overflow-hidden"
+                >
+                  {/* Subtle background gradient on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-cyan-500/0 group-hover:from-purple-500/5 group-hover:to-cyan-500/5 transition-colors" />
+                  
+                  <div className="flex justify-between items-start mb-6 relative z-10">
+                    <div className="p-3 bg-white/5 rounded-xl group-hover:bg-purple-500/10 transition-colors">
+                      <FileText size={24} className="text-white/70 group-hover:text-purple-400 transition-colors" />
+                    </div>
+                    <div className={`px-3 py-1.5 rounded-lg border font-bold text-sm flex items-center gap-1.5 ${getScoreColor(resume.atsScore)}`}>
+                      <BarChart3 size={14} />
+                      {resume.atsScore} / 100
+                    </div>
                   </div>
-                </div>
-                <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
-                  <div className={`${colors.bar} h-full rounded-full transition-all duration-500`} style={{ width: `${resume.atsScore}%` }} />
-                </div>
-                <div>
-                  {!isInMemory ? (
-                    <a href={resume.originalResumeUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white font-medium hover:text-purple-300 transition-colors text-sm">
-                      <ExternalLink size={14} /> View original PDF
-                    </a>
-                  ) : (
-                    <span className="flex items-center gap-2 text-white/40 text-sm"><FileText size={14} /> Analyzed in-memory</span>
-                  )}
-                </div>
-                <p className="text-sm text-white/70 line-clamp-3">{resume.analysisData?.summary || 'No summary available.'}</p>
-                <div className="mt-auto pt-4 border-t border-white/10 flex justify-between items-center text-xs text-white/40">
-                  <span>{resume.analysisData?.missingKeywords?.length || 0} missing keywords</span>
-                  <div className="flex items-center gap-3">
-                    <button onClick={() => handleDelete(resume._id)} className="text-red-400/60 hover:text-red-400 transition-colors p-1" title="Delete">
-                      <Trash2 size={14} />
+                  
+                  <div className="space-y-4 relative z-10">
+                    <div>
+                      <h3 className="font-bold text-lg text-white mb-1 group-hover:text-purple-300 transition-colors">
+                        {resume.analysisData?.experienceLevel || 'Professional'} Resume
+                      </h3>
+                      <div className="flex items-center gap-2 text-xs text-white/40">
+                        <Calendar size={12} />
+                        {new Date(resume.createdAt).toLocaleDateString('en-US', { 
+                          month: 'short', day: 'numeric', year: 'numeric' 
+                        })}
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/5">
+                      <div>
+                        <div className="text-[10px] uppercase tracking-wider text-white/30 font-bold mb-1">Status</div>
+                        <div className="text-sm font-medium text-white/80 truncate">
+                          {resume.analysisData?.jobMatchPercentage 
+                            ? `${resume.analysisData.jobMatchPercentage}% Match` 
+                            : 'General Analysis'}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] uppercase tracking-wider text-white/30 font-bold mb-1">Keywords</div>
+                        <div className="text-sm font-medium text-emerald-400">
+                          {resume.analysisData?.matchedKeywords?.length || 0} Matched
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions overlay */}
+                  <div className="absolute top-6 right-6 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                    <button 
+                      onClick={(e) => handleDelete(resume._id, e)}
+                      className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg backdrop-blur-md transition-colors"
+                      title="Delete"
+                    >
+                      <Trash2 size={16} />
                     </button>
-                    <Link to={`/dashboard/resume/${resume._id}`} className="text-white hover:text-purple-300 font-medium transition-colors">
-                      Full Details &rarr;
-                    </Link>
+                    <div className="p-2 bg-purple-500/20 text-purple-300 rounded-lg backdrop-blur-md">
+                      <ChevronRight size={16} />
+                    </div>
                   </div>
-                </div>
+                </Link>
               </motion.div>
-            );
-          })}
+            ))}
+          </AnimatePresence>
         </div>
       )}
     </div>

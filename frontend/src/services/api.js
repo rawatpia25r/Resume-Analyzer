@@ -16,6 +16,26 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Interceptor to handle expired tokens (auto-logout on 401)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      const message = error.response?.data?.message || '';
+      // Only auto-logout for token-related errors, not login failures
+      if (message.includes('expired') || message.includes('Not authorized')) {
+        const userString = localStorage.getItem('user');
+        if (userString) {
+          console.warn('[Auth] Session expired, logging out...');
+          localStorage.removeItem('user');
+          window.location.href = '/login';
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // For the home page — no login required, uses the original in-memory analysis
 export const analyzeResume = async (file, jobDescription) => {
   const formData = new FormData();
