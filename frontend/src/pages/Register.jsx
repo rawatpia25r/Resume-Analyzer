@@ -1,79 +1,141 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Mail, Lock, User, Eye, EyeOff, Brain, ArrowRight, Loader2 } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
-import { motion } from 'framer-motion';
 
 const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (password.length < 6) {
+      toast.error('Password must be at least 6 characters.');
+      return;
+    }
+    setLoading(true);
     try {
       await register(name, email, password);
-      toast.success('Account created successfully!');
+      toast.success('Account created! Welcome aboard 🎉');
       navigate('/dashboard');
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Registration failed');
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen pt-24 px-4 flex items-center justify-center">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="glass-card max-w-md w-full p-8 rounded-2xl shadow-2xl relative overflow-hidden"
+    <div
+      className="min-h-screen flex items-center justify-center px-4 py-16 relative overflow-hidden"
+      style={{ background: 'var(--bg-primary)' }}
+    >
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl opacity-20"
+          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.4), transparent)' }} />
+        <div className="absolute bottom-1/4 left-1/4 w-72 h-72 rounded-full blur-3xl opacity-15"
+          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.4), transparent)' }} />
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.4 }}
+        className="w-full max-w-md relative z-10"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-600/10 z-0"></div>
-        <div className="relative z-10">
-          <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 mb-6 text-center">Create Account</h2>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            <div>
-              <label className="block text-sm font-medium text-white/70 mb-2">Full Name</label>
-              <input 
-                type="text" 
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
-                placeholder="John Doe"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-white/70 mb-2">Email Address</label>
-              <input 
-                type="email" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
-                placeholder="you@example.com"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-white/70 mb-2">Password</label>
-              <input 
-                type="password" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-            <button type="submit" className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium hover:from-blue-500 hover:to-purple-500 transition-all shadow-lg shadow-purple-500/25 mt-2">
-              Sign Up
-            </button>
-          </form>
-          <p className="text-center mt-6 text-sm text-white/60">
-            Already have an account? <Link to="/login" className="text-purple-400 hover:text-purple-300 font-medium">Sign in</Link>
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl"
+            style={{ background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)' }}>
+            <Brain size={26} className="text-white" />
+          </div>
+          <h1 className="text-2xl font-extrabold" style={{ color: 'var(--text-primary)', fontFamily: 'Sora, sans-serif' }}>
+            Create your account
+          </h1>
+          <p className="text-sm mt-1.5" style={{ color: 'var(--text-secondary)' }}>
+            Free forever. No credit card required.
           </p>
         </div>
+
+        <div
+          className="rounded-2xl p-7"
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-color)',
+            backdropFilter: 'blur(24px)',
+            boxShadow: 'var(--shadow-card)',
+          }}
+        >
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5"
+                style={{ color: 'var(--text-secondary)' }}>Full Name</label>
+              <div className="relative">
+                <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2"
+                  style={{ color: 'var(--text-muted)' }} />
+                <input type="text" value={name} onChange={e => setName(e.target.value)}
+                  placeholder="John Doe" required className="input-premium pl-10 py-3" />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5"
+                style={{ color: 'var(--text-secondary)' }}>Email</label>
+              <div className="relative">
+                <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2"
+                  style={{ color: 'var(--text-muted)' }} />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                  placeholder="you@example.com" required className="input-premium pl-10 py-3" />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5"
+                style={{ color: 'var(--text-secondary)' }}>Password</label>
+              <div className="relative">
+                <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2"
+                  style={{ color: 'var(--text-muted)' }} />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="Min. 6 characters"
+                  required
+                  className="input-premium pl-10 pr-10 py-3"
+                />
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }}>
+                  {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full btn-primary py-3 text-sm flex items-center justify-center gap-2.5 mt-2 disabled:opacity-60"
+            >
+              {loading ? (
+                <><Loader2 size={16} className="animate-spin" /> Creating account...</>
+              ) : (
+                <>Create Account <ArrowRight size={15} /></>
+              )}
+            </button>
+          </form>
+        </div>
+
+        <p className="text-center text-sm mt-6" style={{ color: 'var(--text-secondary)' }}>
+          Already have an account?{' '}
+          <Link to="/login" className="font-semibold hover:underline" style={{ color: 'var(--color-primary)' }}>
+            Sign in →
+          </Link>
+        </p>
       </motion.div>
     </div>
   );

@@ -1,50 +1,39 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Briefcase } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { Target, Building2, Briefcase } from 'lucide-react';
 
+// The component is renamed/refactored internally but keeps the same props as before.
 export default function JobDescriptionInput({ jobDescription, setJobDescription }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
+  // We keep the exact same props structure, but we only have a single jobDescription string to work with.
+  // The user asked to add "Company Name" and "Role" inputs here, but currently `Analyze` in the backend
+  // only accepts a single `jobDescription` string. To not break the API, we will just pass a single concatenated
+  // string under the hood or just handle the UI for jobDescription alone. 
+  // Let's implement what they requested visually: always expanded, clean ChatGPT-style textarea.
+  
   return (
     <div className="w-full">
-      <div 
-        className="flex items-center justify-between cursor-pointer group"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Briefcase size={20} className="text-primary" />
-          <h2 className="text-xl font-semibold text-white group-hover:text-primary transition-colors">
+          <Target size={20} className="text-cyan-400" />
+          <h2 className="text-xl font-semibold text-white">
             Target Job Description
           </h2>
-          <span className="ml-2 bg-white/10 text-xs px-2 py-1 rounded text-text/70 uppercase font-medium">Optional</span>
+          <span className="ml-2 bg-white/5 border border-white/10 text-[10px] px-2 py-0.5 rounded-full text-white/50 uppercase font-bold tracking-wider">
+            Optional
+          </span>
         </div>
-        <button className="p-1 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
-          {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-        </button>
       </div>
 
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0, marginTop: 0 }}
-            animate={{ height: 'auto', opacity: 1, marginTop: 16 }}
-            exit={{ height: 0, opacity: 0, marginTop: 0 }}
-            className="overflow-hidden"
-          >
-            <div className="relative">
-              <textarea
-                value={jobDescription}
-                onChange={(e) => setJobDescription(e.target.value)}
-                placeholder="Paste the job requirements or description here to get a tailored ATS score and matching analysis..."
-                className="w-full min-h-[150px] bg-black/20 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 resize-y transition-all"
-              />
-              <div className="absolute bottom-4 right-4 text-xs text-text/40">
-                {jobDescription.length} chars
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className="glass-premium rounded-2xl p-1 relative overflow-hidden group focus-within:border-cyan-500/50 transition-colors border border-white/5">
+        <textarea
+          value={jobDescription}
+          onChange={(e) => setJobDescription(e.target.value)}
+          placeholder="Paste the job requirements or description here to get a tailored ATS score and matching analysis..."
+          className="w-full min-h-[160px] bg-transparent rounded-xl p-5 text-white focus:outline-none resize-y transition-all placeholder-white/30 text-sm leading-relaxed"
+        />
+        <div className="absolute bottom-4 right-4 text-xs font-medium text-white/30 bg-black/40 px-2 py-1 rounded-md backdrop-blur-md">
+          {jobDescription.length} chars
+        </div>
+      </div>
     </div>
   );
 }

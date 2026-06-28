@@ -19,6 +19,10 @@ const resumeSchema = mongoose.Schema(
       type: Object,
       required: true,
     },
+    resumeText: {
+      type: String,
+      default: '',
+    },
   },
   {
     timestamps: true,

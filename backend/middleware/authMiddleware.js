@@ -18,15 +18,24 @@ const protect = async (req, res, next) => {
       // Get user from the token
       req.user = await User.findById(decoded.id).select('-password');
 
-      next();
+      if (!req.user) {
+        return res.status(401).json({ message: 'User account not found. Please log in again.' });
+      }
+
+      return next();
     } catch (error) {
-      console.log(error);
-      res.status(401).json({ message: 'Not authorized' });
+      console.warn("[Auth] Token verification failed:", error.message);
+
+      if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({ message: 'Session expired. Please log in again.' });
+      }
+
+      return res.status(401).json({ message: 'Not authorized. Invalid token.' });
     }
   }
 
   if (!token) {
-    res.status(401).json({ message: 'Not authorized, no token' });
+    return res.status(401).json({ message: 'Not authorized, no token provided.' });
   }
 };
 

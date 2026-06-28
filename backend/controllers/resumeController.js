@@ -1,8 +1,7 @@
 const Resume = require('../models/Resume');
 const cloudinary = require('../utils/cloudinary');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const { analyzeResume } = require('../utils/geminiHelper');
+const { normalizeAnalysisData } = require('../utils/normalizeHelper');
 
 // Helper function to upload buffer to Cloudinary
 const uploadToCloudinary = (buffer) => {
@@ -24,52 +23,43 @@ const uploadToCloudinary = (buffer) => {
 const uploadResume = async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
+      return res.status(400).json({ error: 'No file uploaded. Please select a PDF or DOCX file.' });
     }
+
+    if (!req.file.buffer || req.file.buffer.length === 0) {
+      return res.status(400).json({ error: 'The uploaded file is empty. Please upload a valid resume.' });
+    }
+
+    console.log(`[Upload] Processing file: ${req.file.originalname} | Size: ${req.file.buffer.length} bytes | Type: ${req.file.mimetype} | User: ${req.user._id}`);
 
     let secure_url = '';
     // 1. Upload to Cloudinary (skip if not configured)
-    if (process.env.CLOUDINARY_CLOUD_NAME === 'your_cloud_name') {
-      console.warn("WARNING: Cloudinary is not configured! Using a dummy URL for the uploaded resume.");
-      secure_url = 'https://dummyimage.com/600x400/000/fff&text=Dummy+Resume+PDF+since+Cloudinary+is+not+setup';
-    } else {
-      const cloudinaryResponse = await uploadToCloudinary(req.file.buffer);
-      secure_url = cloudinaryResponse.secure_url;
+    try {
+      if (process.env.CLOUDINARY_CLOUD_NAME === 'your_cloud_name' || !process.env.CLOUDINARY_CLOUD_NAME) {
+        console.warn("[Upload] WARNING: Cloudinary is not configured! Using a placeholder URL.");
+        secure_url = 'stored-in-memory';
+      } else {
+        const cloudinaryResponse = await uploadToCloudinary(req.file.buffer);
+        secure_url = cloudinaryResponse.secure_url;
+        console.log(`[Upload] Cloudinary upload successful: ${secure_url}`);
+      }
+    } catch (cloudErr) {
+      console.warn("[Upload] Cloudinary upload failed, using fallback:", cloudErr.message);
+      secure_url = 'stored-in-memory';
     }
 
     const jobDescription = req.body.jobDescription || 'General Software Engineering Role';
-    const resumeText = req.file.buffer.toString('utf-8'); // Using a basic toString for demo, in prod we'd parse PDF using pdf-parse
 
-    // 2. Call Gemini for Analysis
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    const prompt = `
-      Act as an expert ATS (Applicant Tracking System).
-      Analyze the following resume against this job description.
-      
-      Job Description:
-      ${jobDescription}
-      
-      Resume text (or partial text):
-      ${resumeText.substring(0, 5000)} // Limiting size to avoid token limit
-      
-      Provide a JSON output with the following structure:
-      {
-        "atsScore": 85,
-        "summary": "Brief summary",
-        "missingKeywords": ["keyword1", "keyword2"],
-        "formattingIssues": ["issue1"],
-        "improvementSuggestions": ["suggestion1"]
-      }
-      Only return the raw JSON, no markdown formatting like \`\`\`json.
-    `;
+    // 2. Call Gemini for Analysis using the shared helper (same as /api/analyze)
+    const base64 = req.file.buffer.toString('base64');
+    const mimeType = req.file.mimetype;
+    const rawResult = await analyzeResume(base64, mimeType, jobDescription);
 
-    const result = await model.generateContent(prompt);
-    let aiResponseText = result.response.text();
-    
-    // Clean up response if it contains markdown
-    aiResponseText = aiResponseText.replace(/```json/g, '').replace(/```/g, '').trim();
-    
-    const analysisData = JSON.parse(aiResponseText);
+    // Normalize snake_case → camelCase
+    const analysisData = normalizeAnalysisData(rawResult);
+
+    // Extract resume text for optimize/cover-letter features (first 8000 chars)
+    const resumeText = req.file.buffer.toString('utf-8').substring(0, 8000);
 
     // 3. Save to DB
     const resumeDoc = await Resume.create({
@@ -77,12 +67,41 @@ const uploadResume = async (req, res) => {
       originalResumeUrl: secure_url,
       atsScore: analysisData.atsScore,
       analysisData: analysisData,
+      resumeText: resumeText,
     });
+
+    console.log(`[Upload] Analysis saved — ATS Score: ${analysisData.atsScore} | Resume ID: ${resumeDoc._id}`);
 
     res.status(201).json(resumeDoc);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message });
+    console.error("====== UPLOAD/ANALYSIS ERROR ======");
+    console.error("Error message:", error.message);
+    console.error("Stack trace:", error.stack);
+    if (req.file) {
+      console.error("File info:", {
+        name: req.file.originalname,
+        size: req.file.buffer?.length,
+        mimetype: req.file.mimetype,
+      });
+    }
+    console.error("===================================");
+
+    // Return user-friendly error messages
+    let userMessage = "Resume upload and analysis failed. Please try again.";
+
+    if (error.message.includes("Empty file buffer")) {
+      userMessage = "The uploaded file appears to be empty or corrupted.";
+    } else if (error.message.includes("JSON")) {
+      userMessage = "The AI could not properly analyze this resume. Please try again or upload a clearer document.";
+    } else if (error.message.includes("429") || error.message.includes("quota") || error.message.includes("rate")) {
+      userMessage = "API rate limit reached. Please wait a moment and try again.";
+    } else if (error.message.includes("timeout") || error.message.includes("ETIMEDOUT")) {
+      userMessage = "The analysis timed out. Please try again.";
+    } else if (error.message) {
+      userMessage = error.message;
+    }
+
+    res.status(500).json({ error: userMessage });
   }
 };
 
@@ -94,6 +113,7 @@ const getUserResumes = async (req, res) => {
     const resumes = await Resume.find({ userId: req.user._id }).sort({ createdAt: -1 });
     res.json(resumes);
   } catch (error) {
+    console.error("[Resumes] Failed to fetch user resumes:", error.message);
     res.status(500).json({ message: error.message });
   }
 };
@@ -116,6 +136,31 @@ const getResumeById = async (req, res) => {
 
     res.json(resume);
   } catch (error) {
+    console.error("[Resumes] Failed to fetch resume by ID:", error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Delete a resume
+// @route   DELETE /api/resume/:id
+// @access  Private
+const deleteResume = async (req, res) => {
+  try {
+    const resume = await Resume.findById(req.params.id);
+
+    if (!resume) {
+      return res.status(404).json({ message: 'Resume not found' });
+    }
+
+    // Check user matching
+    if (resume.userId.toString() !== req.user.id) {
+      return res.status(401).json({ message: 'User not authorized' });
+    }
+
+    await Resume.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Resume deleted successfully' });
+  } catch (error) {
+    console.error("[Resumes] Failed to delete resume:", error.message);
     res.status(500).json({ message: error.message });
   }
 };
@@ -124,4 +169,5 @@ module.exports = {
   uploadResume,
   getUserResumes,
   getResumeById,
+  deleteResume,
 };

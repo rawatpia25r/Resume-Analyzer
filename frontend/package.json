@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.5.1",
     "@tailwindcss/vite": "^4.2.2",
     "axios": "^1.15.0",
     "framer-motion": "^12.38.0",
@@ -19,6 +20,7 @@
     "react-dropzone": "^15.0.0",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.14.1",
+    "recharts": "^3.9.0",
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
