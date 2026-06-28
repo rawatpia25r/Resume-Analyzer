@@ -434,45 +434,24 @@ export default function ResultDashboard({ result, onReset, resumeText }) {
         </div>
       </div>
 
-      {/* Bottom CTA Banner */}
-      <div className="dashboard-card p-8 md:p-12 relative overflow-hidden border border-white/5">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-600/10 to-transparent pointer-events-none z-0" />
-        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
-          <div className="space-y-4">
-            <div className="text-xs font-bold text-blue-400 uppercase tracking-widest">Ready to take the next step?</div>
-            <h2 className="text-2xl md:text-3xl font-extrabold font-heading text-white tracking-tight">Build Your Perfect Resume</h2>
-            <p className="text-slate-400 max-w-lg text-sm md:text-base leading-relaxed font-body">
-              Use our AI builder to create a tailored resume that gets you hired. We use your ATS analysis data to generate perfectly optimized content.
+      {/* Bottom CTA Banner — Cover Letter */}
+      <div className="dashboard-card p-8 md:p-10 relative overflow-hidden border border-white/5">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-purple-600/10 to-transparent pointer-events-none z-0" />
+        <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="space-y-3">
+            <div className="text-xs font-bold text-purple-400 uppercase tracking-widest">Next Step</div>
+            <h2 className="text-xl md:text-2xl font-extrabold font-heading text-white tracking-tight">Generate a Cover Letter</h2>
+            <p className="text-slate-400 max-w-lg text-sm leading-relaxed font-body">
+              Use AI to instantly create a tailored cover letter based on this resume analysis.
             </p>
           </div>
-          
-          <div className="flex flex-col sm:flex-row items-center gap-6 w-full lg:w-auto">
-            {/* Interactive graphical preview */}
-            <div className="hidden sm:block relative w-64 h-36 bg-[#0E131F] border border-white/5 rounded-2xl p-4 overflow-hidden shadow-2xl shrink-0">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 blur-xl rounded-full" />
-              <div className="space-y-2.5">
-                <div className="h-2.5 w-2/3 bg-white/10 rounded-full" />
-                <div className="h-1.5 w-full bg-white/5 rounded-full" />
-                <div className="h-1.5 w-5/6 bg-white/5 rounded-full" />
-                <div className="h-1.5 w-11/12 bg-white/5 rounded-full" />
-                <div className="pt-3 flex gap-2">
-                  <div className="h-5 px-2 bg-emerald-500/10 border border-emerald-500/20 rounded-md flex items-center justify-center text-[7px] font-bold text-emerald-400">ATS OK</div>
-                  <div className="h-5 px-2 bg-purple-500/10 border border-purple-500/20 rounded-md flex items-center justify-center text-[7px] font-bold text-purple-400 font-heading">AI Optimize</div>
-                </div>
-              </div>
-              <div className="absolute bottom-3 right-3 w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30">
-                <Check className="text-white" size={14} />
-              </div>
-            </div>
-
-            <Link 
-              to="/resume-builder" 
-              className="btn-primary px-6 py-3.5 whitespace-nowrap text-sm text-center w-full sm:w-auto shadow-[0_0_20px_rgba(59,130,246,0.25)] flex items-center justify-center gap-2"
-            >
-              Go to Resume Builder
-              <ArrowRight size={16} />
-            </Link>
-          </div>
+          <Link
+            to="/cover-letter"
+            className="btn-primary px-6 py-3 whitespace-nowrap text-sm flex items-center gap-2"
+          >
+            Cover Letter Builder
+            <ArrowRight size={15} />
+          </Link>
         </div>
       </div>
     </motion.div>

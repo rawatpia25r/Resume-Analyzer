@@ -20,6 +20,7 @@
     "react-dropzone": "^15.0.0",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.14.1",
+    "recharts": "^3.9.0",
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {

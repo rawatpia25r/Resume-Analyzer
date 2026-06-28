@@ -1,62 +1,82 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Brain, BarChart3, Lightbulb, Wand2 } from 'lucide-react';
+import { Upload, Cpu, BarChart3, ArrowRight } from 'lucide-react';
 
 const steps = [
-  { icon: Upload, title: 'Upload Resume', desc: 'Drag & drop your PDF or DOCX resume file.', num: '01' },
-  { icon: Brain, title: 'AI Extracts Skills', desc: 'Our AI reads and understands your entire resume.', num: '02' },
-  { icon: BarChart3, title: 'ATS Match Analysis', desc: 'Get scored against real applicant tracking systems.', num: '03' },
-  { icon: Lightbulb, title: 'Improvement Suggestions', desc: 'Receive actionable tips to boost your score.', num: '04' },
-  { icon: Wand2, title: 'Generate Tailored Resume', desc: 'Create job-specific resumes and cover letters.', num: '05' },
+  {
+    step: '01',
+    icon: Upload,
+    title: 'Upload Your Resume',
+    description: 'Upload your resume in PDF or DOCX format. Our system supports all standard resume formats.',
+    color: '#3B82F6',
+  },
+  {
+    step: '02',
+    icon: Cpu,
+    title: 'AI Analyzes Your Resume',
+    description: 'Our AI engine scans your resume against ATS criteria, keyword density, formatting, and more.',
+    color: '#8B5CF6',
+  },
+  {
+    step: '03',
+    icon: BarChart3,
+    title: 'Get Actionable Insights',
+    description: 'Receive a detailed score breakdown with specific recommendations to improve your ATS ranking.',
+    color: '#10B981',
+  },
 ];
 
 export default function HowItWorks() {
   return (
-    <section className="py-20">
+    <section>
       <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
         className="text-center mb-14"
       >
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-          How It <span className="gradient-text">Works</span>
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border border-blue-500/30 bg-blue-500/10 text-blue-300 mb-4">
+          Simple Process
+        </div>
+        <h2 className="text-3xl md:text-4xl font-bold text-white font-heading mb-4">
+          How It Works
         </h2>
         <p className="text-white/50 max-w-xl mx-auto">
-          From upload to optimized resume in five simple steps.
+          Get your resume optimized in three simple steps. No signup required to try.
         </p>
       </motion.div>
 
-      <div className="relative max-w-3xl mx-auto">
-        {/* Vertical connector line */}
-        <div className="absolute left-6 md:left-8 top-8 bottom-8 w-px bg-gradient-to-b from-purple-500/40 via-cyan-500/40 to-purple-500/40 hidden sm:block" />
-
-        <div className="space-y-6">
-          {steps.map((step, i) => (
-            <motion.div
-              key={step.num}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.12, duration: 0.5 }}
-              className="flex items-start gap-5 md:gap-6 relative"
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+        {/* Connector line */}
+        <div className="hidden md:block absolute top-14 left-1/4 right-1/4 h-px bg-gradient-to-r from-blue-500/30 via-purple-500/30 to-emerald-500/30" />
+        
+        {steps.map((step, i) => (
+          <motion.div
+            key={step.step}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.15, duration: 0.5 }}
+            className="glass-premium p-8 rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
+          >
+            <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full blur-2xl opacity-10" style={{ background: step.color }} />
+            
+            <div className="text-5xl font-black mb-6 font-heading" style={{ color: `${step.color}30` }}>
+              {step.step}
+            </div>
+            
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110"
+              style={{ background: `${step.color}20`, color: step.color }}
             >
-              {/* Step number circle */}
-              <div className="relative z-10 shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-purple-600/20 to-cyan-600/20 border border-white/10 flex items-center justify-center">
-                <step.icon className="text-purple-400" size={20} />
-              </div>
-
-              {/* Content */}
-              <div className="glass-premium rounded-2xl p-5 md:p-6 flex-1 group hover:border-purple-500/20 transition-colors">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-xs font-mono text-purple-400/60">STEP {step.num}</span>
-                </div>
-                <h3 className="text-white font-semibold text-lg mb-1">{step.title}</h3>
-                <p className="text-white/45 text-sm">{step.desc}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              <step.icon size={22} />
+            </div>
+            
+            <h3 className="text-lg font-bold text-white mb-3 font-heading">{step.title}</h3>
+            <p className="text-white/50 text-sm leading-relaxed">{step.description}</p>
+          </motion.div>
+        ))}
       </div>
     </section>
   );

@@ -1,50 +1,89 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, Search, AlertTriangle, Wand2, FileText, Briefcase, Download } from 'lucide-react';
+import { Zap, Target, FileCheck, Brain, Shield, TrendingUp } from 'lucide-react';
 
 const features = [
-  { icon: BarChart3, title: 'ATS Score', desc: 'Get an instant score showing how well your resume passes applicant tracking systems.', color: 'from-purple-500/20 to-purple-600/10', iconColor: 'text-purple-400' },
-  { icon: Search, title: 'Keyword Matching', desc: 'Identify matched and missing keywords against any job description.', color: 'from-cyan-500/20 to-cyan-600/10', iconColor: 'text-cyan-400' },
-  { icon: AlertTriangle, title: 'Missing Skills', desc: 'Discover skill gaps and get actionable suggestions to fill them.', color: 'from-amber-500/20 to-amber-600/10', iconColor: 'text-amber-400' },
-  { icon: Wand2, title: 'Resume Builder', desc: 'Generate tailored resumes optimized for specific job descriptions.', color: 'from-pink-500/20 to-pink-600/10', iconColor: 'text-pink-400' },
-  { icon: FileText, title: 'Cover Letter Generator', desc: 'Create professional, job-specific cover letters with one click.', color: 'from-emerald-500/20 to-emerald-600/10', iconColor: 'text-emerald-400' },
-  { icon: Briefcase, title: 'Role Recommendations', desc: 'Get AI-suggested roles that match your experience and skills.', color: 'from-blue-500/20 to-blue-600/10', iconColor: 'text-blue-400' },
-  { icon: Download, title: 'PDF Export', desc: 'Download beautifully formatted resumes and cover letters as PDF.', color: 'from-violet-500/20 to-violet-600/10', iconColor: 'text-violet-400' },
+  {
+    icon: Brain,
+    title: 'AI-Powered Analysis',
+    description: 'Advanced AI models analyze every aspect of your resume against current ATS standards and job requirements.',
+    color: '#3B82F6',
+  },
+  {
+    icon: Target,
+    title: 'Keyword Optimization',
+    description: 'Identify missing keywords and phrases that hiring managers and ATS systems look for in top candidates.',
+    color: '#8B5CF6',
+  },
+  {
+    icon: FileCheck,
+    title: 'Format Validation',
+    description: 'Ensure your resume formatting is ATS-compatible — no tables, graphics, or unsupported layouts.',
+    color: '#10B981',
+  },
+  {
+    icon: TrendingUp,
+    title: 'Score Tracking',
+    description: 'Track your ATS score improvements over time and see how your resume evolves with each iteration.',
+    color: '#F59E0B',
+  },
+  {
+    icon: Zap,
+    title: 'Instant Results',
+    description: 'Get comprehensive analysis results in under 30 seconds — no waiting, no delays.',
+    color: '#EC4899',
+  },
+  {
+    icon: Shield,
+    title: 'Privacy First',
+    description: 'Your resume data is encrypted and never shared. Full privacy compliance with GDPR standards.',
+    color: '#14B8A6',
+  },
 ];
 
 export default function FeaturesSection() {
   return (
-    <section className="py-20">
+    <section>
       <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-12"
+        transition={{ duration: 0.6 }}
+        className="text-center mb-14"
       >
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-          Everything You Need to <span className="gradient-text">Land the Job</span>
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border border-purple-500/30 bg-purple-500/10 text-purple-300 mb-4">
+          <Zap size={13} /> Everything You Need
+        </div>
+        <h2 className="text-3xl md:text-4xl font-bold text-white font-heading mb-4">
+          Powerful Features
         </h2>
-        <p className="text-white/50 max-w-2xl mx-auto">
-          Powerful AI tools to analyze, optimize, and tailor your resume for any position.
+        <p className="text-white/50 max-w-xl mx-auto">
+          All the tools you need to create an ATS-optimized resume that gets you more interviews.
         </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        {features.map((feat, i) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {features.map((feature, i) => (
           <motion.div
-            key={feat.title}
+            key={feature.title}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.08, duration: 0.4 }}
-            whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            className="glass-premium rounded-2xl p-6 group cursor-default"
+            transition={{ delay: i * 0.08, duration: 0.5 }}
+            className="glass-premium p-6 rounded-2xl group hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
           >
-            <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${feat.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-              <feat.icon className={feat.iconColor} size={20} />
+            <div
+              className="absolute -top-6 -right-6 w-20 h-20 rounded-full blur-2xl opacity-10 group-hover:opacity-25 transition-opacity"
+              style={{ background: feature.color }}
+            />
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-transform duration-200 group-hover:scale-110"
+              style={{ background: `${feature.color}20`, color: feature.color }}
+            >
+              <feature.icon size={20} />
             </div>
-            <h3 className="text-white font-semibold mb-2">{feat.title}</h3>
-            <p className="text-white/45 text-sm leading-relaxed">{feat.desc}</p>
+            <h3 className="text-base font-bold text-white mb-2 font-heading">{feature.title}</h3>
+            <p className="text-sm text-white/50 leading-relaxed">{feature.description}</p>
           </motion.div>
         ))}
       </div>

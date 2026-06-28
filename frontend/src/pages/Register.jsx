@@ -1,121 +1,142 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Mail, Lock, User, Eye, EyeOff, Brain, ArrowRight, Loader2 } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Mail, Lock, User } from 'lucide-react';
 
 const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    if (password.length < 6) {
+      toast.error('Password must be at least 6 characters.');
+      return;
+    }
+    setLoading(true);
     try {
       await register(name, email, password);
-      toast.success('Account created successfully!');
+      toast.success('Account created! Welcome aboard 🎉');
       navigate('/dashboard');
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Registration failed');
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen pt-24 px-4 flex items-center justify-center relative overflow-hidden">
-      {/* Background Gradients */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-20 pointer-events-none">
-        <div className="absolute top-[20%] right-[20%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[20%] left-[20%] w-[40%] h-[40%] bg-cyan-600/10 blur-[120px] rounded-full" />
+    <div
+      className="min-h-screen flex items-center justify-center px-4 py-16 relative overflow-hidden"
+      style={{ background: 'var(--bg-primary)' }}
+    >
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl opacity-20"
+          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.4), transparent)' }} />
+        <div className="absolute bottom-1/4 left-1/4 w-72 h-72 rounded-full blur-3xl opacity-15"
+          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.4), transparent)' }} />
       </div>
 
-      <div className="w-full max-w-md my-8">
-        <Link to="/" className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors mb-6 text-sm font-medium">
-          <ArrowLeft size={16} /> Back to Home
-        </Link>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass-premium p-8 sm:p-10 rounded-[2rem] shadow-2xl relative"
-        >
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
-            <p className="text-white/50 text-sm">Join to save your analysis history and use the AI Builder</p>
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.4 }}
+        className="w-full max-w-md relative z-10"
+      >
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl"
+            style={{ background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)' }}>
+            <Brain size={26} className="text-white" />
           </div>
+          <h1 className="text-2xl font-extrabold" style={{ color: 'var(--text-primary)', fontFamily: 'Sora, sans-serif' }}>
+            Create your account
+          </h1>
+          <p className="text-sm mt-1.5" style={{ color: 'var(--text-secondary)' }}>
+            Free forever. No credit card required.
+          </p>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+        <div
+          className="rounded-2xl p-7"
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-color)',
+            backdropFilter: 'blur(24px)',
+            boxShadow: 'var(--shadow-card)',
+          }}
+        >
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-white/50 mb-2 ml-1">Full Name</label>
+              <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5"
+                style={{ color: 'var(--text-secondary)' }}>Full Name</label>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40">
-                  <User size={18} />
-                </div>
-                <input 
-                  type="text" 
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="input-premium w-full pl-11 pr-4 py-3.5"
-                  placeholder="John Doe"
-                  required
-                />
+                <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2"
+                  style={{ color: 'var(--text-muted)' }} />
+                <input type="text" value={name} onChange={e => setName(e.target.value)}
+                  placeholder="John Doe" required className="input-premium pl-10 py-3" />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-white/50 mb-2 ml-1">Email Address</label>
+              <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5"
+                style={{ color: 'var(--text-secondary)' }}>Email</label>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40">
-                  <Mail size={18} />
-                </div>
-                <input 
-                  type="email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="input-premium w-full pl-11 pr-4 py-3.5"
-                  placeholder="you@example.com"
-                  required
-                />
+                <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2"
+                  style={{ color: 'var(--text-muted)' }} />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                  placeholder="you@example.com" required className="input-premium pl-10 py-3" />
               </div>
             </div>
-            
+
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-white/50 mb-2 ml-1">Password</label>
+              <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5"
+                style={{ color: 'var(--text-secondary)' }}>Password</label>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40">
-                  <Lock size={18} />
-                </div>
-                <input 
-                  type="password" 
+                <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2"
+                  style={{ color: 'var(--text-muted)' }} />
+                <input
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="input-premium w-full pl-11 pr-4 py-3.5"
-                  placeholder="••••••••"
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="Min. 6 characters"
                   required
+                  className="input-premium pl-10 pr-10 py-3"
                 />
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }}>
+                  {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
               </div>
             </div>
 
-            <button 
-              type="submit" 
-              disabled={isLoading}
-              className="btn-primary w-full py-4 mt-4 flex items-center justify-center disabled:opacity-50"
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full btn-primary py-3 text-sm flex items-center justify-center gap-2.5 mt-2 disabled:opacity-60"
             >
-              {isLoading ? 'Creating account...' : 'Create Account'}
+              {loading ? (
+                <><Loader2 size={16} className="animate-spin" /> Creating account...</>
+              ) : (
+                <>Create Account <ArrowRight size={15} /></>
+              )}
             </button>
           </form>
+        </div>
 
-          <p className="text-center mt-8 text-sm text-white/50">
-            Already have an account? <Link to="/login" className="text-purple-400 hover:text-purple-300 font-semibold transition-colors">Sign in</Link>
-          </p>
-        </motion.div>
-      </div>
+        <p className="text-center text-sm mt-6" style={{ color: 'var(--text-secondary)' }}>
+          Already have an account?{' '}
+          <Link to="/login" className="font-semibold hover:underline" style={{ color: 'var(--color-primary)' }}>
+            Sign in →
+          </Link>
+        </p>
+      </motion.div>
     </div>
   );
 };

@@ -13,6 +13,7 @@ import StatsSection from '../components/StatsSection';
 import FeaturesSection from '../components/FeaturesSection';
 import HowItWorks from '../components/HowItWorks';
 import Footer from '../components/Footer';
+import ResumeWatermark from '../components/ResumeWatermark';
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -76,6 +77,9 @@ const Home = () => {
         <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-purple-600/10 blur-[120px] rounded-full" />
         <div className="absolute top-[40%] -right-[10%] w-[40%] h-[40%] bg-cyan-600/10 blur-[120px] rounded-full" />
       </div>
+
+      {/* Resume Watermark — right side background */}
+      <ResumeWatermark />
 
       <div className="flex-grow max-w-7xl mx-auto w-full">
         <AnimatePresence mode="wait">
@@ -144,6 +148,7 @@ const Home = () => {
           )}
         </AnimatePresence>
       </div>
+      <Footer />
     </div>
   );
 };

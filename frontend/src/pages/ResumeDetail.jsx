@@ -20,7 +20,6 @@ const ResumeDetail = () => {
       const { data } = await api.get(`/resume/${id}`);
       setResume(data);
     } catch (error) {
-      console.error(error);
       toast.error('Failed to load resume details');
       navigate('/dashboard');
     } finally {
@@ -30,10 +29,10 @@ const ResumeDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-24 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4 text-white/50">
-          <Loader2 className="animate-spin text-purple-500" size={40} />
-          <p className="font-medium tracking-wide">Loading analysis details...</p>
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4" style={{ color: 'var(--text-muted)' }}>
+          <Loader2 className="animate-spin" size={36} style={{ color: 'var(--color-primary)' }} />
+          <p className="text-sm font-medium">Loading analysis...</p>
         </div>
       </div>
     );
@@ -42,26 +41,27 @@ const ResumeDetail = () => {
   if (!resume) return null;
 
   return (
-    <div className="min-h-screen pt-24 px-4 sm:px-6 relative overflow-hidden">
-      {/* Background Gradients */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-20 pointer-events-none">
-        <div className="absolute top-[10%] left-[20%] w-[30%] h-[30%] bg-purple-600/10 blur-[100px] rounded-full" />
-      </div>
+    <div>
+      <button
+        onClick={() => navigate('/dashboard')}
+        className="flex items-center gap-2 text-sm font-medium px-4 py-2.5 rounded-xl mb-4 transition-all"
+        style={{
+          background: 'var(--bg-hover)',
+          border: '1px solid var(--border-color)',
+          color: 'var(--text-secondary)',
+        }}
+        onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
+        onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+      >
+        <ArrowLeft size={15} />
+        Back to Dashboard
+      </button>
 
-      <div className="max-w-6xl mx-auto">
-        <button 
-          onClick={() => navigate('/dashboard')}
-          className="flex items-center gap-2 text-white/50 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-4 py-2.5 rounded-xl text-sm font-medium mb-4"
-        >
-          <ArrowLeft size={16} /> Back to Dashboard
-        </button>
-
-        <ResultDashboard 
-          result={resume.analysisData} 
-          onReset={() => navigate('/dashboard')}
-          resumeText={resume.resumeText}
-        />
-      </div>
+      <ResultDashboard
+        result={resume.analysisData}
+        onReset={() => navigate('/dashboard')}
+        resumeText={resume.resumeText}
+      />
     </div>
   );
 };

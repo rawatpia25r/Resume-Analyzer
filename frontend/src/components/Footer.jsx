@@ -1,49 +1,35 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Brain } from 'lucide-react';
 
 export default function Footer() {
   return (
     <footer className="border-t border-white/5 mt-20">
       <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {/* Brand */}
-          <div>
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white p-2 rounded-xl">
-                <span className="font-bold text-lg leading-none block">ATS</span>
-              </div>
-              <span className="font-semibold text-lg text-white">Analyzer Hub</span>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)' }}>
+              <Brain size={18} className="text-white" />
             </div>
-            <p className="text-white/40 text-sm leading-relaxed max-w-xs">
-              AI-powered resume optimization platform. Analyze, optimize, and generate tailored resumes to land more interviews.
-            </p>
+            <div>
+              <div className="font-bold text-white text-sm">Resume Intelligence</div>
+              <div className="text-xs text-white/40">AI-Powered Resume Platform</div>
+            </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">Navigation</h4>
-            <ul className="space-y-2.5">
-              <li><Link to="/dashboard" className="text-white/40 hover:text-white/80 text-sm transition-colors">Dashboard</Link></li>
-              <li><Link to="/resume-builder" className="text-white/40 hover:text-white/80 text-sm transition-colors">Resume Builder</Link></li>
-              <li><Link to="/" className="text-white/40 hover:text-white/80 text-sm transition-colors">Analyze Resume</Link></li>
-            </ul>
+          {/* Links */}
+          <div className="flex items-center gap-6 text-sm text-white/40">
+            <Link to="/" className="hover:text-white transition-colors">Home</Link>
+            <Link to="/login" className="hover:text-white transition-colors">Sign In</Link>
+            <Link to="/register" className="hover:text-white transition-colors">Sign Up</Link>
           </div>
 
-          {/* Legal */}
-          <div>
-            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">Legal</h4>
-            <ul className="space-y-2.5">
-              <li><span className="text-white/40 text-sm cursor-default">Privacy Policy</span></li>
-              <li><span className="text-white/40 text-sm cursor-default">Terms of Service</span></li>
-              <li><span className="text-white/40 text-sm cursor-default">Contact</span></li>
-            </ul>
+          {/* Copyright */}
+          <div className="text-xs text-white/30">
+            © {new Date().getFullYear()} Resume Intelligence. All rights reserved.
           </div>
-        </div>
-
-        <div className="border-t border-white/5 mt-10 pt-6 text-center">
-          <p className="text-white/25 text-xs">
-            © {new Date().getFullYear()} ATS Analyzer Hub. Built with AI.
-          </p>
         </div>
       </div>
     </footer>
