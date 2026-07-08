@@ -1,12 +1,13 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, FileText, Mail, Briefcase, 
   User, Settings, ChevronLeft, ChevronRight,
-  Brain
+  Wand2
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import ThemeSwitcher from './ThemeSwitcher';
+import BrandLogo from './BrandLogo';
 
 export default function Sidebar() {
   const location = useLocation();
@@ -15,6 +16,7 @@ export default function Sidebar() {
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Resume Analysis', path: '/', icon: FileText },
+    { name: 'Resume Builder', path: '/resume-builder', icon: Wand2 },
     { name: 'Cover Letter', path: '/cover-letter', icon: Mail },
     { name: 'Job Match', path: '/job-match', icon: Briefcase },
     { name: 'Profile', path: '/profile', icon: User },
@@ -29,19 +31,11 @@ export default function Sidebar() {
   return (
     <aside
       className="sidebar-bg flex flex-col h-screen fixed left-0 top-0 z-50 overflow-hidden transition-all duration-300"
-      style={{ width: collapsed ? '72px' : '240px' }}
+      style={{ width: collapsed ? '72px' : '248px' }}
     >
       {/* Logo */}
-      <div className="flex items-center gap-3 px-4 py-5 border-b" style={{ borderColor: 'var(--border-color)' }}>
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg">
-          <Brain size={18} className="text-white" />
-        </div>
-        {!collapsed && (
-          <div className="overflow-hidden">
-            <div className="font-bold text-base leading-tight" style={{ color: 'var(--text-primary)' }}>Resume</div>
-            <div className="text-xs font-semibold" style={{ color: 'var(--color-primary)' }}>Intelligence</div>
-          </div>
-        )}
+      <div className="flex items-center px-4 py-5 border-b" style={{ borderColor: 'var(--border-color)' }}>
+        <BrandLogo size="md" collapsed={collapsed} />
       </div>
 
       {/* Navigation */}
@@ -69,7 +63,7 @@ export default function Sidebar() {
               )}
               {/* Active dot indicator when collapsed */}
               {collapsed && active && (
-                <span className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-blue-500" />
+                <span className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--color-primary)' }} />
               )}
             </Link>
           );

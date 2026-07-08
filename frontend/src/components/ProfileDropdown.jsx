@@ -45,7 +45,7 @@ export default function ProfileDropdown({ resumes = [] }) {
   const stats = [
     { label: 'Total Analyses', value: totalAnalyses, icon: FileText, color: '#3B82F6' },
     { label: 'Avg ATS Score', value: avgScore, icon: TrendingUp, color: '#10B981' },
-    { label: 'Best Score', value: bestScore, icon: BarChart3, color: '#8B5CF6' },
+    { label: 'Best Score', value: bestScore, icon: BarChart3, color: '#3B82F6' },
   ];
 
   return (
@@ -58,7 +58,7 @@ export default function ProfileDropdown({ resumes = [] }) {
         <div
           className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm transition-all duration-200 group-hover:scale-105 shadow-lg"
           style={{
-            background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)',
+            background: 'linear-gradient(135deg, #3B82F6, #3B82F6)',
             boxShadow: '0 4px 14px rgba(59, 130, 246, 0.4)',
           }}
         >
@@ -89,13 +89,13 @@ export default function ProfileDropdown({ resumes = [] }) {
             className="px-5 py-4 border-b"
             style={{
               borderColor: 'var(--border-color)',
-              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05))',
+              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.05))',
             }}
           >
             <div className="flex items-center gap-3">
               <div
                 className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-base shadow-lg"
-                style={{ background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)' }}
+                style={{ background: 'linear-gradient(135deg, #3B82F6, #3B82F6)' }}
               >
                 {getInitials(user?.name)}
               </div>

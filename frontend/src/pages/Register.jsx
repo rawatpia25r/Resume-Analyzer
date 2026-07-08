@@ -1,9 +1,11 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, Eye, EyeOff, Brain, ArrowRight, Loader2 } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
+import BrandLogo from '../components/BrandLogo';
+import ResumeWatermark from '../components/ResumeWatermark';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -23,7 +25,7 @@ const Register = () => {
     setLoading(true);
     try {
       await register(name, email, password);
-      toast.success('Account created! Welcome aboard 🎉');
+      toast.success('Account created successfully');
       navigate('/dashboard');
     } catch (err) {
       toast.error(err?.response?.data?.message || 'Registration failed. Please try again.');
@@ -37,11 +39,14 @@ const Register = () => {
       className="min-h-screen flex items-center justify-center px-4 py-16 relative overflow-hidden"
       style={{ background: 'var(--bg-primary)' }}
     >
+      {/* Watermark */}
+      <ResumeWatermark opacity={0.025} />
+
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl opacity-20"
-          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.4), transparent)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.4), transparent)' }} />
         <div className="absolute bottom-1/4 left-1/4 w-72 h-72 rounded-full blur-3xl opacity-15"
-          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.4), transparent)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.4), transparent)' }} />
       </div>
 
       <motion.div
@@ -50,12 +55,11 @@ const Register = () => {
         transition={{ duration: 0.4 }}
         className="w-full max-w-md relative z-10"
       >
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl"
-            style={{ background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)' }}>
-            <Brain size={26} className="text-white" />
+        <div className="text-center mb-8 flex flex-col items-center">
+          <div className="mb-4">
+            <BrandLogo size="lg" />
           </div>
-          <h1 className="text-2xl font-extrabold" style={{ color: 'var(--text-primary)', fontFamily: 'Sora, sans-serif' }}>
+          <h1 className="text-2xl font-extrabold" style={{ color: 'var(--text-primary)', fontFamily: "'Plus Jakarta Sans', 'Sora', sans-serif" }}>
             Create your account
           </h1>
           <p className="text-sm mt-1.5" style={{ color: 'var(--text-secondary)' }}>
@@ -74,8 +78,8 @@ const Register = () => {
         >
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5"
-                style={{ color: 'var(--text-secondary)' }}>Full Name</label>
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5"
+                style={{ color: 'var(--text-muted)' }}>Full Name</label>
               <div className="relative">
                 <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2"
                   style={{ color: 'var(--text-muted)' }} />
@@ -85,8 +89,8 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5"
-                style={{ color: 'var(--text-secondary)' }}>Email</label>
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5"
+                style={{ color: 'var(--text-muted)' }}>Email</label>
               <div className="relative">
                 <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2"
                   style={{ color: 'var(--text-muted)' }} />
@@ -96,8 +100,8 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5"
-                style={{ color: 'var(--text-secondary)' }}>Password</label>
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5"
+                style={{ color: 'var(--text-muted)' }}>Password</label>
               <div className="relative">
                 <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2"
                   style={{ color: 'var(--text-muted)' }} />

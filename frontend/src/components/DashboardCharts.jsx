@@ -123,7 +123,7 @@ export default function DashboardCharts({ resumes = [], compact = false }) {
             <XAxis dataKey="label" {...axisProps} />
             <YAxis {...axisProps} domain={[0, 100]} />
             <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="score" fill="#8B5CF6" radius={[4, 4, 0, 0]} maxBarSize={18} />
+            <Bar dataKey="score" fill="#3B82F6" radius={[4, 4, 0, 0]} maxBarSize={18} />
           </BarChart>
         </ResponsiveContainer>
       </div>

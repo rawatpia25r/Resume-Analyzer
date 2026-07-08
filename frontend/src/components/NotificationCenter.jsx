@@ -14,7 +14,7 @@ const mockNotifications = [
   {
     id: 2,
     icon: Sparkles,
-    color: '#8B5CF6',
+    color: '#3B82F6',
     title: 'AI Tip: Add Metrics',
     message: 'Quantify your achievements to boost your score by ~15 points.',
     time: '1 hour ago',

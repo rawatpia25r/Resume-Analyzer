@@ -19,7 +19,7 @@ export default function Layout({ children, resumes = [] }) {
         />
         <div
           className="absolute -bottom-1/4 -left-1/4 w-[50%] h-[50%] rounded-full blur-3xl opacity-20"
-          style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%)' }}
         />
       </div>
 

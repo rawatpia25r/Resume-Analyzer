@@ -1,45 +1,63 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bell, Shield, Palette, Database, ChevronRight, Check, Moon, Sun } from 'lucide-react';
+import {
+  Bell, Shield, Palette, Database, ChevronRight, Moon, Sun, 
+  Smartphone, UserCircle, Key, LogOut, CheckCircle2
+} from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { toast } from 'react-hot-toast';
 
-const Section = ({ title, icon: Icon, color, children }) => (
+const Section = ({ title, description, icon: Icon, color, children, delay = 0 }) => (
   <motion.div
     initial={{ opacity: 0, y: 15 }}
     animate={{ opacity: 1, y: 0 }}
-    className="theme-card p-5"
+    transition={{ delay }}
+    className="theme-card overflow-hidden"
   >
-    <div className="flex items-center gap-2 mb-4">
-      <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-        style={{ background: `${color}15`, color }}>
-        <Icon size={15} />
+    <div className="p-6 border-b" style={{ borderColor: 'var(--border-color)', background: 'var(--bg-hover)' }}>
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm"
+          style={{ background: `linear-gradient(135deg, ${color}22, ${color}11)`, color }}>
+          <Icon size={18} />
+        </div>
+        <div>
+          <h3 className="font-extrabold text-base font-heading" style={{ color: 'var(--text-primary)' }}>
+            {title}
+          </h3>
+          {description && <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{description}</p>}
+        </div>
       </div>
-      <h3 className="font-semibold text-sm" style={{ color: 'var(--text-primary)', fontFamily: 'Sora, sans-serif' }}>
-        {title}
-      </h3>
     </div>
-    {children}
+    <div className="p-6 space-y-2">
+      {children}
+    </div>
   </motion.div>
 );
 
 const ToggleRow = ({ label, description, defaultChecked = false }) => {
   const [checked, setChecked] = useState(defaultChecked);
   return (
-    <div className="flex items-center justify-between py-3 border-b last:border-b-0"
-      style={{ borderColor: 'var(--border-color)' }}>
+    <div className="flex items-center justify-between p-3 rounded-xl transition-colors hover:bg-white/5"
+      style={{ border: '1px solid transparent' }}
+      onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-color)'}
+      onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}
+    >
       <div>
-        <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{label}</p>
-        {description && <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{description}</p>}
+        <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{label}</p>
+        {description && <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{description}</p>}
       </div>
       <button
         onClick={() => setChecked(!checked)}
-        className="relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0"
-        style={{ background: checked ? 'var(--color-primary)' : 'var(--bg-hover)', border: '1px solid var(--border-color)' }}
+        className="relative w-12 h-6 rounded-full transition-all duration-300 flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--bg-card)]"
+        style={{ 
+          background: checked ? 'var(--color-primary)' : 'var(--bg-hover)', 
+          border: '1px solid var(--border-color)',
+          boxShadow: checked ? '0 0 10px rgba(96,165,250,0.4)' : 'none'
+        }}
       >
         <div
-          className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200"
-          style={{ transform: checked ? 'translateX(22px)' : 'translateX(2px)' }}
+          className="absolute top-[1px] w-5 h-5 rounded-full bg-white shadow-md transition-transform duration-300"
+          style={{ transform: checked ? 'translateX(24px)' : 'translateX(2px)' }}
         />
       </button>
     </div>
@@ -51,114 +69,134 @@ export default function SettingsPage() {
   const isDark = theme === 'dark';
 
   return (
-    <div className="space-y-6 pb-10 max-w-2xl">
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-2xl font-extrabold" style={{ color: 'var(--text-primary)', fontFamily: 'Sora, sans-serif' }}>
-          Settings
+    <div className="space-y-8 pb-12 relative z-10 max-w-4xl">
+      
+      {/* Header */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-2">
+        <h1 className="text-3xl font-extrabold font-heading" style={{ color: 'var(--text-primary)' }}>
+          Account Settings
         </h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-          Manage your preferences and account settings
+        <p className="text-sm mt-1.5 font-medium" style={{ color: 'var(--text-secondary)' }}>
+          Manage your personal preferences, security, and notification settings.
         </p>
       </motion.div>
 
-      {/* Appearance */}
-      <Section title="Appearance" icon={Palette} color="#8B5CF6">
-        <div className="flex items-center justify-between py-3">
-          <div>
-            <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Theme</p>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-              Currently using {isDark ? 'Dark' : 'Light'} mode
-            </p>
+      {/* Grid Layout for Settings */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        {/* Account Details */}
+        <Section title="Account" description="Manage your personal information" icon={UserCircle} color="#3B82F6" delay={0.1}>
+          <div className="space-y-4">
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block" style={{ color: 'var(--text-muted)' }}>Full Name</label>
+              <input type="text" defaultValue="User Name" className="input-premium py-2 text-sm" />
+            </div>
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block" style={{ color: 'var(--text-muted)' }}>Email Address</label>
+              <input type="email" defaultValue="user@example.com" className="input-premium py-2 text-sm" />
+            </div>
+            <div className="pt-2">
+              <button className="btn-primary text-xs px-4 py-2 flex items-center gap-2">
+                <CheckCircle2 size={14} /> Save Changes
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => !isDark && toggleTheme()}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all"
-              style={{
-                background: isDark ? 'rgba(59,130,246,0.15)' : 'var(--bg-hover)',
-                border: isDark ? '1px solid rgba(59,130,246,0.3)' : '1px solid var(--border-color)',
-                color: isDark ? '#3B82F6' : 'var(--text-muted)',
-              }}
-            >
-              <Moon size={12} /> Dark
+        </Section>
+
+        {/* Appearance */}
+        <Section title="Appearance" description="Customize your UI experience" icon={Palette} color="#3B82F6" delay={0.2}>
+          <div className="p-3 rounded-xl border" style={{ borderColor: 'var(--border-color)', background: 'var(--bg-hover)' }}>
+            <p className="text-sm font-bold mb-3" style={{ color: 'var(--text-primary)' }}>Interface Theme</p>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => !isDark && toggleTheme()}
+                className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl transition-all border-2 ${isDark ? 'border-[#60A5FA] bg-[rgba(96,165,250,0.1)]' : 'border-transparent bg-[var(--bg-input)] hover:bg-[var(--bg-card)]'}`}
+              >
+                <Moon size={24} style={{ color: isDark ? '#60A5FA' : 'var(--text-muted)' }} />
+                <span className="text-xs font-bold" style={{ color: isDark ? 'var(--text-primary)' : 'var(--text-secondary)' }}>Dark Mode</span>
+              </button>
+              <button
+                onClick={() => isDark && toggleTheme()}
+                className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl transition-all border-2 ${!isDark ? 'border-[#3B82F6] bg-[rgba(59,130,246,0.1)]' : 'border-transparent bg-[var(--bg-input)] hover:bg-[var(--bg-card)]'}`}
+              >
+                <Sun size={24} style={{ color: !isDark ? '#3B82F6' : 'var(--text-muted)' }} />
+                <span className="text-xs font-bold" style={{ color: !isDark ? 'var(--text-primary)' : 'var(--text-secondary)' }}>Light Mode</span>
+              </button>
+            </div>
+          </div>
+        </Section>
+
+        {/* Notifications */}
+        <Section title="Notifications" description="Control what alerts you receive" icon={Bell} color="#10B981" delay={0.3}>
+          <div className="space-y-1">
+            <ToggleRow label="Analysis Alerts" description="Get notified when ATS scoring completes" defaultChecked={true} />
+            <ToggleRow label="Job Matches" description="Weekly alerts for new compatible roles" defaultChecked={true} />
+            <ToggleRow label="Product Updates" description="News about Resume Intelligence features" defaultChecked={false} />
+            <ToggleRow label="Security Alerts" description="Important notifications about your account" defaultChecked={true} />
+          </div>
+        </Section>
+
+        {/* Security */}
+        <Section title="Security" description="Protect your account and data" icon={Shield} color="#F59E0B" delay={0.4}>
+          <div className="space-y-2">
+            <button className="w-full flex items-center justify-between p-3 rounded-xl text-left transition-colors hover:bg-white/5" style={{ border: '1px solid transparent' }} onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-color)'} onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{ background: 'rgba(245,158,11,0.1)', color: '#F59E0B' }}><Key size={16} /></div>
+                <div>
+                  <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Change Password</p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Updated 3 months ago</p>
+                </div>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--text-muted)' }} />
             </button>
-            <button
-              onClick={() => isDark && toggleTheme()}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all"
-              style={{
-                background: !isDark ? 'rgba(245,158,11,0.15)' : 'var(--bg-hover)',
-                border: !isDark ? '1px solid rgba(245,158,11,0.3)' : '1px solid var(--border-color)',
-                color: !isDark ? '#D97706' : 'var(--text-muted)',
-              }}
-            >
-              <Sun size={12} /> Light
+
+            <button className="w-full flex items-center justify-between p-3 rounded-xl text-left transition-colors hover:bg-white/5" style={{ border: '1px solid transparent' }} onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-color)'} onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{ background: 'rgba(59,130,246,0.1)', color: '#3B82F6' }}><Smartphone size={16} /></div>
+                <div>
+                  <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Active Sessions</p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Manage devices logged into your account</p>
+                </div>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--text-muted)' }} />
             </button>
           </div>
-        </div>
-      </Section>
+        </Section>
 
-      {/* Notifications */}
-      <Section title="Notifications" icon={Bell} color="#3B82F6">
-        <ToggleRow label="ATS Score Updates" description="Get notified when new analysis completes" defaultChecked={true} />
-        <ToggleRow label="Job Match Alerts" description="Receive alerts for new job matches" defaultChecked={true} />
-        <ToggleRow label="Resume Tips" description="Weekly AI tips to improve your resume" defaultChecked={false} />
-        <ToggleRow label="Email Notifications" description="Receive updates via email" defaultChecked={false} />
-      </Section>
+        {/* Data & Privacy */}
+        <div className="md:col-span-2">
+          <Section title="Data & Privacy" description="Manage your data and account status" icon={Database} color="#EC4899" delay={0.5}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <button
+                onClick={() => toast.success('Data export initiated')}
+                className="w-full flex items-center justify-between p-4 rounded-xl text-left transition-all hover:-translate-y-1"
+                style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-color)' }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--color-primary)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-color)'}
+              >
+                <div>
+                  <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Download My Data</p>
+                  <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Get a copy of all your resumes and scores</p>
+                </div>
+                <Database size={18} style={{ color: 'var(--color-primary)' }} />
+              </button>
 
-      {/* Security */}
-      <Section title="Security" icon={Shield} color="#10B981">
-        <div className="space-y-3">
-          <div className="p-3 rounded-xl flex items-center justify-between"
-            style={{ background: 'var(--bg-hover)' }}>
-            <div>
-              <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Change Password</p>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Update your account password</p>
+              <button
+                onClick={() => toast.error('Account deletion is disabled in demo mode')}
+                className="w-full flex items-center justify-between p-4 rounded-xl text-left transition-all hover:-translate-y-1"
+                style={{ background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.15)' }}
+              >
+                <div>
+                  <p className="text-sm font-bold text-red-500">Delete Account</p>
+                  <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Permanently erase all your data</p>
+                </div>
+                <LogOut size={18} className="text-red-500" />
+              </button>
             </div>
-            <ChevronRight size={14} style={{ color: 'var(--text-muted)' }} />
-          </div>
-          <div className="p-3 rounded-xl flex items-center justify-between"
-            style={{ background: 'var(--bg-hover)' }}>
-            <div>
-              <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Two-Factor Auth</p>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Add an extra layer of security</p>
-            </div>
-            <span className="text-xs px-2 py-0.5 rounded-full"
-              style={{ background: 'rgba(245,158,11,0.1)', color: '#F59E0B' }}>
-              Coming Soon
-            </span>
-          </div>
+          </Section>
         </div>
-      </Section>
 
-      {/* Data */}
-      <Section title="Data & Privacy" icon={Database} color="#F59E0B">
-        <div className="space-y-3">
-          <button
-            onClick={() => toast.success('Export started — check your email')}
-            className="w-full flex items-center justify-between p-3 rounded-xl text-left transition-colors"
-            style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-color)' }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-hover)'}
-            onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-color)'}
-          >
-            <div>
-              <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Export My Data</p>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Download all your analysis data</p>
-            </div>
-            <ChevronRight size={14} style={{ color: 'var(--text-muted)' }} />
-          </button>
-          <button
-            onClick={() => toast.error('Contact support to delete your account')}
-            className="w-full flex items-center justify-between p-3 rounded-xl text-left transition-colors"
-            style={{ background: 'rgba(239,68,68,0.04)', border: '1px solid rgba(239,68,68,0.12)' }}
-          >
-            <div>
-              <p className="text-sm font-medium" style={{ color: '#EF4444' }}>Delete Account</p>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Permanently delete your account</p>
-            </div>
-            <ChevronRight size={14} style={{ color: '#EF4444' }} />
-          </button>
-        </div>
-      </Section>
+      </div>
     </div>
   );
 }

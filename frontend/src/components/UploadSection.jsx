@@ -38,61 +38,95 @@ export default function UploadSection({ file, setFile }) {
   return (
     <div className="w-full" id="upload-section">
       <div className="mb-4">
-        <h2 className="text-xl font-semibold text-white mb-1">Upload Resume</h2>
-        <p className="text-sm text-white/50">Supported formats: PDF, DOCX (Max 10MB)</p>
+        <h2 className="text-xl font-bold mb-1" style={{ color: 'var(--text-primary)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+          Upload Resume
+        </h2>
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+          Supported formats: PDF, DOCX (Max 10MB)
+        </p>
       </div>
       
       {!file ? (
         <div 
           {...getRootProps()} 
-          className={`relative overflow-hidden border-2 border-dashed rounded-2xl p-12 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 ${
+          className={`relative overflow-hidden border-2 border-dashed rounded-2xl p-14 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 ${
             isDragActive 
-              ? 'border-purple-500 bg-purple-500/10' 
-              : 'border-white/10 hover:border-purple-500/50 hover:bg-white/5'
+              ? 'border-[#60A5FA] bg-[rgba(96,165,250,0.06)]' 
+              : 'border-[var(--border-color)] hover:border-[rgba(96,165,250,0.4)] hover:bg-[rgba(96,165,250,0.03)]'
           }`}
         >
           {isDragActive && (
-            <div className="absolute inset-0 bg-purple-500/5 blur-3xl pointer-events-none" />
+            <div className="absolute inset-0 pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse at center, rgba(96,165,250,0.08), transparent)' }} />
           )}
           <input {...getInputProps()} />
           <motion.div 
             animate={{ y: isDragActive ? -10 : 0, scale: isDragActive ? 1.1 : 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-xl ${
-              isDragActive ? 'bg-purple-500 text-white shadow-purple-500/25' : 'bg-white/5 text-white/50'
+              isDragActive 
+                ? 'text-white' 
+                : ''
             }`}
+            style={{
+              background: isDragActive 
+                ? 'linear-gradient(135deg, #60A5FA, #2563EB)' 
+                : 'rgba(96,165,250,0.08)',
+              color: isDragActive ? 'white' : 'var(--text-muted)',
+              boxShadow: isDragActive ? '0 8px 24px rgba(59,130,246,0.3)' : 'none',
+            }}
           >
             <UploadCloud size={32} />
           </motion.div>
-          <p className="text-lg text-center font-medium text-white mb-2">
-            {isDragActive ? "Drop the resume here..." : "Drag & drop your resume"}
+          <p className="text-lg text-center font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
+            {isDragActive ? "Drop your resume here..." : "Drag & drop your resume"}
+          </p>
+          <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
+            or click to browse files
           </p>
           <div className="flex items-center gap-4 text-sm font-medium">
-            <span className="flex items-center gap-1.5 text-white/40"><CheckCircle2 size={16} className="text-emerald-500" /> PDF</span>
-            <span className="flex items-center gap-1.5 text-white/40"><CheckCircle2 size={16} className="text-emerald-500" /> DOCX</span>
+            <span className="flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
+              <CheckCircle2 size={16} style={{ color: '#10B981' }} /> PDF
+            </span>
+            <span className="flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
+              <CheckCircle2 size={16} style={{ color: '#10B981' }} /> DOCX
+            </span>
           </div>
         </div>
       ) : (
         <motion.div 
           initial={{ opacity: 0, scale: 0.98, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="glass-premium border border-purple-500/30 p-5 rounded-2xl flex items-center justify-between shadow-[0_0_30px_rgba(124,58,237,0.15)]"
+          className="glass-premium p-5 rounded-2xl flex items-center justify-between"
+          style={{
+            border: '1px solid rgba(96,165,250,0.25)',
+            boxShadow: '0 0 30px rgba(59,130,246,0.10)',
+          }}
         >
           <div className="flex items-center gap-4 overflow-hidden">
-            <div className="bg-gradient-to-br from-purple-500/20 to-indigo-500/20 p-3.5 rounded-xl text-purple-400 border border-purple-500/20">
+            <div className="p-3.5 rounded-xl" style={{
+              background: 'linear-gradient(135deg, rgba(96,165,250,0.15), rgba(37,99,235,0.10))',
+              color: '#60A5FA',
+              border: '1px solid rgba(96,165,250,0.15)',
+            }}>
               <FileText size={28} />
             </div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-white truncate max-w-[200px] sm:max-w-sm mb-1">{file.name}</p>
-              <div className="flex items-center gap-2 text-xs font-medium text-white/50">
-                <span className="bg-white/10 px-2 py-0.5 rounded-md">{fileSize} MB</span>
+              <p className="font-semibold truncate max-w-[200px] sm:max-w-sm mb-1" style={{ color: 'var(--text-primary)' }}>
+                {file.name}
+              </p>
+              <div className="flex items-center gap-2 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
+                <span className="px-2 py-0.5 rounded-md" style={{ background: 'var(--bg-hover)' }}>{fileSize} MB</span>
                 <span>Ready for analysis</span>
               </div>
             </div>
           </div>
           <button 
             onClick={(e) => { e.stopPropagation(); setFile(null); }}
-            className="p-2.5 bg-white/5 hover:bg-red-500/20 rounded-xl transition-colors text-white/50 hover:text-red-400 border border-transparent hover:border-red-500/30"
+            className="p-2.5 rounded-xl transition-colors border border-transparent"
+            style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.12)'; e.currentTarget.style.color = '#EF4444'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'transparent'; }}
             aria-label="Remove file"
           >
             <X size={20} />

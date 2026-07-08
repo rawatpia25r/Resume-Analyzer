@@ -184,7 +184,7 @@ export default function ResultDashboard({ result, onReset, resumeText }) {
             </div>
             <h1 className="text-3xl md:text-5xl font-extrabold text-white font-heading leading-tight tracking-tight">
               Let's Analyze Your <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-purple-500">Resume</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-blue-500">Resume</span>
             </h1>
             <p className="text-slate-400 text-base md:text-lg leading-relaxed max-w-md">
               Get AI-powered insights, improve your score, and land your dream job.
@@ -248,7 +248,7 @@ export default function ResultDashboard({ result, onReset, resumeText }) {
             value={`${result.atsScore}/100`}
             subtitle="Great match with ATS systems"
             icon={Target}
-            color="#8B5CF6"
+            color="#3B82F6"
           />
         </div>
 
@@ -315,8 +315,8 @@ export default function ResultDashboard({ result, onReset, resumeText }) {
           <div className="lg:col-span-7 h-full">
             <div className="dashboard-card p-6 md:p-8 flex flex-col h-full space-y-6">
               <h3 className="text-lg font-bold flex items-center gap-3 text-white font-heading">
-                <div className="p-2.5 bg-purple-500/10 rounded-xl border border-purple-500/20">
-                  <TrendingUp className="text-purple-400" size={18} />
+                <div className="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20">
+                  <TrendingUp className="text-blue-400" size={18} />
                 </div>
                 Recruiter Recommendations
               </h3>
@@ -418,7 +418,7 @@ export default function ResultDashboard({ result, onReset, resumeText }) {
                         <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Recommended Roles</div>
                         <div className="flex flex-wrap gap-1.5">
                           {result.recommendedRoles.slice(0, 3).map((role, i) => (
-                            <span key={i} className="text-[9px] font-semibold px-2 py-0.5 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-md">
+                            <span key={i} className="text-[9px] font-semibold px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-md">
                               {role}
                             </span>
                           ))}
@@ -436,10 +436,10 @@ export default function ResultDashboard({ result, onReset, resumeText }) {
 
       {/* Bottom CTA Banner — Cover Letter */}
       <div className="dashboard-card p-8 md:p-10 relative overflow-hidden border border-white/5">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-purple-600/10 to-transparent pointer-events-none z-0" />
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-600/10 to-transparent pointer-events-none z-0" />
         <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="space-y-3">
-            <div className="text-xs font-bold text-purple-400 uppercase tracking-widest">Next Step</div>
+            <div className="text-xs font-bold text-blue-400 uppercase tracking-widest">Next Step</div>
             <h2 className="text-xl md:text-2xl font-extrabold font-heading text-white tracking-tight">Generate a Cover Letter</h2>
             <p className="text-slate-400 max-w-lg text-sm leading-relaxed font-body">
               Use AI to instantly create a tailored cover letter based on this resume analysis.

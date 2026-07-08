@@ -13,7 +13,7 @@ export default function AnalyzeButton({ isAnalyzing, onClick, disabled }) {
         className={`relative overflow-hidden group w-full sm:w-auto min-w-[280px] flex items-center justify-center gap-3 py-4 px-8 rounded-2xl text-lg font-bold transition-all duration-300 ${
           disabled 
             ? 'bg-white/5 text-white/30 cursor-not-allowed border border-white/5' 
-            : 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_8px_32px_rgba(124,58,237,0.4)] hover:shadow-[0_8px_40px_rgba(124,58,237,0.6)]'
+            : 'bg-gradient-to-r from-[#60A5FA] to-[#2563EB] text-white shadow-[0_8px_32px_rgba(59,130,246,0.4)] hover:shadow-[0_8px_40px_rgba(59,130,246,0.6)]'
         }`}
       >
         {!disabled && !isAnalyzing && (

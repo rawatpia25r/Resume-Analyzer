@@ -150,7 +150,7 @@ function StatCard({ title, value, icon: Icon, color, trend, trendLabel, delay = 
       transition={{ duration: 0.45, delay }}
       className="rounded-2xl p-5 relative overflow-hidden group cursor-default"
       style={{
-        background: '#0D1829',
+        background: 'var(--bg-card-solid)',
         border: '1px solid rgba(255,255,255,0.07)',
         transition: 'border-color 0.3s, transform 0.3s, box-shadow 0.3s',
       }}
@@ -342,7 +342,7 @@ const Dashboard = () => {
         transition={{ duration: 0.5 }}
         className="relative overflow-hidden rounded-2xl"
         style={{
-          background: '#0B1628',
+          background: 'var(--bg-secondary)',
           border: '1px solid rgba(255,255,255,0.07)',
           minHeight: '220px',
         }}
@@ -351,7 +351,7 @@ const Dashboard = () => {
         <div className="relative z-10 p-8" style={{ maxWidth: '55%' }}>
           <div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4"
-            style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', color: '#60A5FA' }}
+            style={{ background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.2)', color: '#C4B5FD' }}
           >
             ✦ AI-Powered Resume Analysis
           </div>
@@ -364,7 +364,7 @@ const Dashboard = () => {
             <span
               className="block"
               style={{
-                background: 'linear-gradient(90deg, #3B82F6, #8B5CF6)',
+                background: 'linear-gradient(90deg, #60A5FA, #2563EB)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -382,7 +382,7 @@ const Dashboard = () => {
             to="/"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
             style={{
-              background: 'linear-gradient(135deg, #3B82F6, #2563EB)',
+              background: 'linear-gradient(135deg, #60A5FA, #2563EB)',
               boxShadow: '0 4px 18px rgba(59,130,246,0.4)',
             }}
           >
@@ -390,18 +390,10 @@ const Dashboard = () => {
             New Analysis
           </Link>
 
-          {/* Social proof */}
+          {/* Tagline */}
           <div className="flex items-center gap-2 mt-5">
-            <div className="flex -space-x-2">
-              {['#3B82F6', '#8B5CF6', '#10B981'].map((c, i) => (
-                <div key={i} className="w-7 h-7 rounded-full border-2 border-[#0B1628] flex items-center justify-center text-[10px] font-bold text-white"
-                  style={{ background: c, zIndex: 3 - i }}>
-                  {['A', 'B', 'C'][i]}
-                </div>
-              ))}
-            </div>
-            <span className="text-xs text-slate-500">
-              Join 50K+ professionals improving their careers with AI ✨
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              Start optimizing your career with AI-powered insights
             </span>
           </div>
         </div>
@@ -416,7 +408,7 @@ const Dashboard = () => {
           trend={totalAnalyses > 0 ? `↑ ${totalAnalyses}` : undefined} trendLabel="all time" delay={0.05} />
         <StatCard title="Average ATS Score" value={avgScore} icon={TrendingUp} color="#10B981"
           trend={avgScore >= 70 ? '↑ 8%' : undefined} trendLabel="this month" delay={0.1} />
-        <StatCard title="Best ATS Score" value={bestScore} icon={Trophy} color="#8B5CF6"
+        <StatCard title="Best ATS Score" value={bestScore} icon={Trophy} color="#3B82F6"
           trend={bestScore > 0 ? '↑ 5%' : undefined} trendLabel="this month" delay={0.15} />
         <StatCard title="Resumes Uploaded" value={totalAnalyses} icon={Upload} color="#F59E0B"
           trend={totalAnalyses > 0 ? '↑ 16%' : undefined} trendLabel="this month" delay={0.2} />
@@ -432,7 +424,7 @@ const Dashboard = () => {
         {/* Recent Analysis */}
         <div
           className="lg:col-span-1 rounded-2xl p-5"
-          style={{ background: '#0D1829', border: '1px solid rgba(255,255,255,0.07)' }}
+          style={{ background: 'var(--bg-card-solid)', border: '1px solid var(--border-color)' }}
         >
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-white text-sm" style={{ fontFamily: 'Sora, sans-serif' }}>
@@ -489,7 +481,7 @@ const Dashboard = () => {
           </h3>
           <div>
             <ActionItem icon={FileText} title="New Analysis" desc="Analyze your resume" color="#3B82F6" path="/" delay={0.1} />
-            <ActionItem icon={Mail} title="Cover Letter Builder" desc="Create a cover letter" color="#8B5CF6" path="/cover-letter" delay={0.15} />
+            <ActionItem icon={Mail} title="Cover Letter Builder" desc="Create a cover letter" color="#3B82F6" path="/cover-letter" delay={0.15} />
             <ActionItem icon={Briefcase} title="Job Match" desc="Find the best job match" color="#10B981" path="/job-match" delay={0.2} />
             <ActionItem icon={Lightbulb} title="Resume Tips" desc="Expert ATS tips" color="#F59E0B" path="/" delay={0.25} />
           </div>

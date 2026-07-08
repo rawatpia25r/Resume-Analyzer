@@ -9,6 +9,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
+import PageTransitionWrapper from './components/PageTransitionWrapper';
 
 // Pages
 import Home from './pages/Home';
@@ -20,6 +21,7 @@ import CoverLetterPage from './pages/CoverLetterPage';
 import JobMatch from './pages/JobMatch';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
+import ResumeBuilderPage from './pages/ResumeBuilderPage';
 
 // Public layout wrapper (home, login, register)
 function PublicLayout({ children }) {
@@ -38,39 +40,44 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         {/* Public Routes */}
-        <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
-        <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
-        <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
+        <Route path="/" element={<PageTransitionWrapper><PublicLayout><Home /></PublicLayout></PageTransitionWrapper>} />
+        <Route path="/login" element={<PageTransitionWrapper><PublicLayout><Login /></PublicLayout></PageTransitionWrapper>} />
+        <Route path="/register" element={<PageTransitionWrapper><PublicLayout><Register /></PublicLayout></PageTransitionWrapper>} />
 
         {/* Protected Dashboard Routes */}
         <Route path="/dashboard" element={
           <ProtectedRoute>
-            <Layout><Dashboard /></Layout>
+            <PageTransitionWrapper><Layout><Dashboard /></Layout></PageTransitionWrapper>
           </ProtectedRoute>
         } />
         <Route path="/resume/:id" element={
           <ProtectedRoute>
-            <Layout><ResumeDetail /></Layout>
+            <PageTransitionWrapper><Layout><ResumeDetail /></Layout></PageTransitionWrapper>
           </ProtectedRoute>
         } />
         <Route path="/cover-letter" element={
           <ProtectedRoute>
-            <Layout><CoverLetterPage /></Layout>
+            <PageTransitionWrapper><Layout><CoverLetterPage /></Layout></PageTransitionWrapper>
+          </ProtectedRoute>
+        } />
+        <Route path="/resume-builder" element={
+          <ProtectedRoute>
+            <PageTransitionWrapper><Layout><ResumeBuilderPage /></Layout></PageTransitionWrapper>
           </ProtectedRoute>
         } />
         <Route path="/job-match" element={
           <ProtectedRoute>
-            <Layout><JobMatch /></Layout>
+            <PageTransitionWrapper><Layout><JobMatch /></Layout></PageTransitionWrapper>
           </ProtectedRoute>
         } />
         <Route path="/profile" element={
           <ProtectedRoute>
-            <Layout><ProfilePage /></Layout>
+            <PageTransitionWrapper><Layout><ProfilePage /></Layout></PageTransitionWrapper>
           </ProtectedRoute>
         } />
         <Route path="/settings" element={
           <ProtectedRoute>
-            <Layout><SettingsPage /></Layout>
+            <PageTransitionWrapper><Layout><SettingsPage /></Layout></PageTransitionWrapper>
           </ProtectedRoute>
         } />
       </Routes>
@@ -90,7 +97,7 @@ function App() {
               color: 'var(--text-primary)',
               border: '1px solid var(--border-color)',
               backdropFilter: 'blur(16px)',
-              fontFamily: 'Inter, sans-serif',
+              fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif",
               fontSize: '14px',
             },
           }}

@@ -29,7 +29,7 @@ export default function TopBar({ resumes = [] }) {
           }}
           onFocus={e => {
             e.target.style.borderColor = 'var(--color-primary)';
-            e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.12)';
+            e.target.style.boxShadow = '0 0 0 3px rgba(96, 165, 250, 0.12)';
           }}
           onBlur={e => {
             e.target.style.borderColor = 'var(--border-color)';

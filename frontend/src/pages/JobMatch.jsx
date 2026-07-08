@@ -153,7 +153,7 @@ export default function JobMatch() {
             </h3>
           </div>
           <MatchBar label="Technical Skills" value={82} color="#3B82F6" />
-          <MatchBar label="Experience Level" value={75} color="#8B5CF6" />
+          <MatchBar label="Experience Level" value={75} color="#3B82F6" />
           <MatchBar label="Education Match" value={90} color="#10B981" />
           <MatchBar label="Keyword Density" value={68} color="#F59E0B" />
           <MatchBar label="ATS Readability" value={atsScore} color="#EF4444" />
@@ -163,7 +163,7 @@ export default function JobMatch() {
         <div className="theme-card p-5 space-y-4">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: 'rgba(139,92,246,0.1)', color: '#8B5CF6' }}>
+              style={{ background: 'rgba(59,130,246,0.1)', color: '#3B82F6' }}>
               <Sparkles size={13} />
             </div>
             <h3 className="font-semibold text-sm" style={{ color: 'var(--text-primary)', fontFamily: 'Sora, sans-serif' }}>
@@ -310,10 +310,10 @@ export default function JobMatch() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
         className="theme-card p-6 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.06), rgba(139,92,246,0.04))' }}
+        style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.06), rgba(59,130,246,0.04))' }}
       >
         <div className="absolute right-0 top-0 w-48 h-48 rounded-full blur-3xl pointer-events-none opacity-30"
-          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.3), transparent)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.3), transparent)' }} />
         <div className="relative z-10">
           <h3 className="font-bold text-base mb-4" style={{ color: 'var(--text-primary)', fontFamily: 'Sora, sans-serif' }}>
             ✨ Why Top Jobs Match You
