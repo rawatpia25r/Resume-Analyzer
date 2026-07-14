@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Upload, Target, Star, User, AlertTriangle, 
@@ -80,6 +80,24 @@ const SmallMetricCard = ({ title, value, subtitle, icon: Icon, color }) => {
 
 export default function ResultDashboard({ result, onReset, resumeText }) {
   const recommendationsRef = useRef(null);
+  const resultTopRef = useRef(null);
+
+  // Always scroll to the top of this component on mount / re-render with new result
+  useEffect(() => {
+    // Scroll the main window to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Scroll any parent scrollable container (Layout main area)
+    const mainEl = document.querySelector('main');
+    if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Scroll this component's top ref into view
+    const timer = setTimeout(() => {
+      resultTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [result]); // Re-run when result object changes (new analysis)
 
   const scrollToRecommendations = () => {
     recommendationsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -146,11 +164,12 @@ export default function ResultDashboard({ result, onReset, resumeText }) {
 
   return (
     <motion.div 
+      ref={resultTopRef}
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -15 }}
       transition={{ duration: 0.4 }}
-      className="flex flex-col gap-10 pb-20"
+      className="flex flex-col gap-10 pb-20 scroll-mt-24"
     >
       {/* Top Navigation */}
       <div className="flex justify-between items-center print:hidden">

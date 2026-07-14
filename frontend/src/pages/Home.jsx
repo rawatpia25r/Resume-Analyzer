@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { analyzeResume } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
@@ -30,6 +30,29 @@ const Home = () => {
   const [result, setResult] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [analysisScore, setAnalysisScore] = useState(0);
+  const resultTopRef = useRef(null);
+
+  // Scroll to top of page whenever result is set (new analysis)
+  const scrollToTop = useCallback(() => {
+    // Scroll the main window to the very top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Also reset any scrollable parent containers
+    const mainEl = document.querySelector('main');
+    if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  // When result changes, schedule a scroll-to-top after render
+  useEffect(() => {
+    if (result && !showSuccess) {
+      // Small delay to let AnimatePresence finish switching
+      const timer = setTimeout(() => {
+        scrollToTop();
+        // Also scroll the ref into view as a fallback
+        resultTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [result, showSuccess, scrollToTop]);
 
   const handleAnalyze = async () => {
     // Require login before analysis
@@ -83,10 +106,17 @@ const Home = () => {
     setFile(null);
     setJobDescription('');
     setShowSuccess(false);
+    // Scroll back to top when resetting
+    setTimeout(() => scrollToTop(), 50);
   };
 
   const handleViewReport = () => {
     setShowSuccess(false);
+    // Scroll to top of results after dismissing the success overlay
+    setTimeout(() => {
+      scrollToTop();
+      resultTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   return (
@@ -185,6 +215,7 @@ const Home = () => {
           ) : (
             <motion.div
               key="result-section"
+              ref={resultTopRef}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}

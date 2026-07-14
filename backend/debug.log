@@ -1,0 +1,15 @@
+[2026-07-10T09:11:01.826Z] ERROR: API rate limit reached. Please wait a minute before trying again.
+STACK: Error: API rate limit reached. Please wait a minute before trying again.
+    at analyzeResume (C:\Resume Analyzer\backend\utils\geminiHelper.js:145:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.analyze (C:\Resume Analyzer\backend\controllers\analyzeController.js:47:19)
+[2026-07-10T09:15:10.994Z] ERROR: API rate limit reached. Please wait a minute before trying again.
+STACK: Error: API rate limit reached. Please wait a minute before trying again.
+    at analyzeResume (C:\Resume Analyzer\backend\utils\geminiHelper.js:145:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.analyze (C:\Resume Analyzer\backend\controllers\analyzeController.js:47:19)
+[2026-07-10T09:17:01.132Z] ERROR: API rate limit reached. Please wait a minute before trying again.
+STACK: Error: API rate limit reached. Please wait a minute before trying again.
+    at analyzeResume (C:\Resume Analyzer\backend\utils\geminiHelper.js:145:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async exports.analyze (C:\Resume Analyzer\backend\controllers\analyzeController.js:52:19)

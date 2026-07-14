@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Bell, Shield, Palette, Database, ChevronRight, Moon, Sun, 
+  Bell, Shield, Palette, Database, ChevronRight, Moon, Sun, Monitor,
   Smartphone, UserCircle, Key, LogOut, CheckCircle2
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -65,8 +65,13 @@ const ToggleRow = ({ label, description, defaultChecked = false }) => {
 };
 
 export default function SettingsPage() {
-  const { theme, toggleTheme } = useTheme();
-  const isDark = theme === 'dark';
+  const { themePref, setTheme } = useTheme();
+
+  const themeOptions = [
+    { key: 'light', label: 'Light', icon: Sun, desc: 'Clean bright interface' },
+    { key: 'dark', label: 'Dark', icon: Moon, desc: 'Easy on the eyes' },
+    { key: 'system', label: 'System', icon: Monitor, desc: 'Match your OS' },
+  ];
 
   return (
     <div className="space-y-8 pb-12 relative z-10 max-w-4xl">
@@ -103,25 +108,36 @@ export default function SettingsPage() {
           </div>
         </Section>
 
-        {/* Appearance */}
+        {/* Appearance — Light / Dark / System */}
         <Section title="Appearance" description="Customize your UI experience" icon={Palette} color="#3B82F6" delay={0.2}>
           <div className="p-3 rounded-xl border" style={{ borderColor: 'var(--border-color)', background: 'var(--bg-hover)' }}>
-            <p className="text-sm font-bold mb-3" style={{ color: 'var(--text-primary)' }}>Interface Theme</p>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => !isDark && toggleTheme()}
-                className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl transition-all border-2 ${isDark ? 'border-[#60A5FA] bg-[rgba(96,165,250,0.1)]' : 'border-transparent bg-[var(--bg-input)] hover:bg-[var(--bg-card)]'}`}
-              >
-                <Moon size={24} style={{ color: isDark ? '#60A5FA' : 'var(--text-muted)' }} />
-                <span className="text-xs font-bold" style={{ color: isDark ? 'var(--text-primary)' : 'var(--text-secondary)' }}>Dark Mode</span>
-              </button>
-              <button
-                onClick={() => isDark && toggleTheme()}
-                className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl transition-all border-2 ${!isDark ? 'border-[#3B82F6] bg-[rgba(59,130,246,0.1)]' : 'border-transparent bg-[var(--bg-input)] hover:bg-[var(--bg-card)]'}`}
-              >
-                <Sun size={24} style={{ color: !isDark ? '#3B82F6' : 'var(--text-muted)' }} />
-                <span className="text-xs font-bold" style={{ color: !isDark ? 'var(--text-primary)' : 'var(--text-secondary)' }}>Light Mode</span>
-              </button>
+            <p className="text-sm font-bold mb-1" style={{ color: 'var(--text-primary)' }}>Interface Theme</p>
+            <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>Choose how Resume Intelligence looks for you</p>
+            <div className="grid grid-cols-3 gap-3">
+              {themeOptions.map(opt => {
+                const selected = themePref === opt.key;
+                return (
+                  <button
+                    key={opt.key}
+                    onClick={() => setTheme(opt.key)}
+                    className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl transition-all border-2"
+                    style={{
+                      borderColor: selected ? '#60A5FA' : 'transparent',
+                      background: selected ? 'rgba(96,165,250,0.1)' : 'var(--bg-input)',
+                    }}
+                    onMouseEnter={e => { if (!selected) e.currentTarget.style.background = 'var(--bg-card)'; }}
+                    onMouseLeave={e => { if (!selected) e.currentTarget.style.background = 'var(--bg-input)'; }}
+                  >
+                    <opt.icon size={22} style={{ color: selected ? '#60A5FA' : 'var(--text-muted)' }} />
+                    <span className="text-xs font-bold" style={{ color: selected ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
+                      {opt.label}
+                    </span>
+                    <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                      {opt.desc}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </Section>

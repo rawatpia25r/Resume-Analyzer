@@ -2,7 +2,6 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LogOut, LayoutDashboard, Sparkles } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
-import ThemeSwitcher from './ThemeSwitcher';
 import BrandLogo from './BrandLogo';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -111,7 +110,6 @@ export default function Navbar() {
 
         {/* Right actions */}
         <div className="flex items-center gap-3 sm:gap-4">
-          <ThemeSwitcher />
           {user ? (
             <>
               <Link
