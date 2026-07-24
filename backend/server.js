@@ -7,7 +7,13 @@ const connectDB = require('./config/db');
 connectDB();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://resume-analyzer-32a4.onrender.com"
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
