@@ -170,28 +170,6 @@ PORT=5000
 
 ---
 
-# 📸 Screenshots
-
-Add screenshots here.
-
-Example:
-
-```text
-screenshots/
-├── home.png
-├── upload.png
-├── result.png
-```
-
-Then include them like:
-
-```markdown
-![Home](screenshots/home.png)
-
-![Results](screenshots/result.png)
-```
-
----
 
 # 💡 Future Improvements
 
